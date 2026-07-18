@@ -206,9 +206,61 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
   const onVol = (e: React.ChangeEvent<HTMLInputElement>) => { const v = videoRef.current; if (v) { const vl = +e.target.value / 100; v.volume = vl; setVol(vl * 100); setMuted(vl === 0) } }
   const toggleMute = () => { const v = videoRef.current; if (v) { v.muted = !v.muted; setMuted(v.muted) } }
   const fmt = (s: number) => { const m = Math.floor(s / 60); return `${m}:${Math.floor(s % 60).toString().padStart(2, '0')}` }
-  const toggleFs = async () => { const c = containerRef.current; if (!c) return; document.fullscreenElement ? await document.exitFullscreen() : await c.requestFullscreen() }
 
-  useEffect(() => { const h = () => setFs(!!document.fullscreenElement); document.addEventListener('fullscreenchange', h); return () => document.removeEventListener('fullscreenchange', h) }, [])
+  // ── Orientation lock helpers ──
+  const lockLandscape = async () => {
+    try {
+      const screenAny = screen as Screen & { orientation?: { lock?: (o: string) => Promise<void> } }
+      if (screenAny.orientation?.lock) await screenAny.orientation.lock('landscape')
+    } catch { /* orientation lock not supported or blocked */ }
+  }
+  const unlockOrientation = async () => {
+    try {
+      const screenAny = screen as Screen & { orientation?: { unlock?: () => void } }
+      if (screenAny.orientation?.unlock) screenAny.orientation.unlock()
+    } catch { /* orientation unlock not supported */ }
+  }
+
+  const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+
+  // ── Fullscreen toggle with orientation lock + iOS fallback ──
+  const toggleFs = async () => {
+    const c = containerRef.current; if (!c) return
+    if (document.fullscreenElement || (document as Document & { webkitFullscreenElement?: Element }).webkitFullscreenElement) {
+      // Exit fullscreen
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen()
+        else await (document as Document & { webkitExitFullscreen?: () => Promise<void> }).webkitExitFullscreen?.()
+      } catch { /* ignore */ }
+      if (isMobile()) unlockOrientation()
+    } else {
+      // Enter fullscreen
+      try {
+        if (c.requestFullscreen) await c.requestFullscreen()
+        else await (c as HTMLElement & { webkitRequestFullscreen?: () => Promise<void> }).webkitRequestFullscreen?.()
+      } catch { /* fallback: try native video fullscreen on iOS */ }
+      // iOS Safari: use video element's native fullscreen
+      if (!document.fullscreenElement && videoRef.current) {
+        const v = videoRef.current as HTMLVideoElement & { webkitEnterFullscreen?: () => void }
+        if (v.webkitEnterFullscreen) { v.webkitEnterFullscreen(); return }
+      }
+      if (isMobile()) lockLandscape()
+    }
+  }
+
+  useEffect(() => {
+    const h = () => {
+      const inFs = !!(document.fullscreenElement || (document as Document & { webkitFullscreenElement?: Element }).webkitFullscreenElement)
+      setFs(inFs)
+      if (!inFs && isMobile()) unlockOrientation()
+    }
+    document.addEventListener('fullscreenchange', h)
+    document.addEventListener('webkitfullscreenchange', h)
+    return () => {
+      document.removeEventListener('fullscreenchange', h)
+      document.removeEventListener('webkitfullscreenchange', h)
+    }
+  }, [])
 
   const show = useCallback(() => {
     setControls(true)
@@ -255,7 +307,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
 
   if (videoType === 'youtube') {
     return (
-      <div ref={containerRef} className="relative w-full aspect-video bg-black rounded-xl sm:rounded-2xl overflow-hidden ring-1 ring-white/5">
+      <div ref={containerRef} className="video-player-container relative w-full aspect-video bg-black rounded-xl sm:rounded-2xl overflow-hidden ring-1 ring-white/5">
         <iframe ref={playerRef} src={`https://www.youtube.com/embed/${videoUrl}?enablejsapi=1&rel=0`} className="absolute inset-0 w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
       </div>
     )
@@ -266,7 +318,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
   return (
     <div
       ref={containerRef}
-      className="relative w-full aspect-video bg-black rounded-xl sm:rounded-2xl overflow-hidden group ring-1 ring-white/5 video-glow"
+      className="video-player-container relative w-full aspect-video bg-black rounded-xl sm:rounded-2xl overflow-hidden group ring-1 ring-white/5 video-glow"
       onMouseMove={show}
       onMouseLeave={() => { if (playing) setControls(false); setPanel('none') }}
       onTouchStart={show}
@@ -305,7 +357,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
 
       {/* Subtitle */}
       {subText && (
-        <div className="absolute bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 z-20 pointer-events-none max-w-[85%] sm:max-w-[80%]">
+        <div className="subtitle-overlay absolute bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 z-20 pointer-events-none max-w-[85%] sm:max-w-[80%]">
           <span className="inline-block px-3 py-1.5 rounded-lg whitespace-pre-line leading-relaxed" style={{ fontSize: `${subSize * 0.014}rem`, color: subColor, background: `rgba(0,0,0,${subBg / 100})`, fontFamily: subFontFamily, textShadow: '0 2px 8px rgba(0,0,0,0.8)', backdropFilter: 'blur(6px)', direction: 'rtl' }}>
             {subText}
           </span>
@@ -314,7 +366,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
 
       {/* Controls */}
       {!error && (
-        <div dir="ltr" className={`absolute inset-0 flex flex-col justify-end transition-opacity duration-300 ${controls ? 'opacity-100' : 'opacity-0'} pointer-events-none`}>
+        <div dir="ltr" className={`video-controls-overlay absolute inset-0 flex flex-col justify-end transition-opacity duration-300 ${controls ? 'opacity-100' : 'opacity-0'} pointer-events-none`}>
           {/* Gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent pointer-events-none" />
 

@@ -484,3 +484,63 @@ html, body {
   overscroll-behavior: contain;
   overflow: hidden;
 }
+
+/* ══════════════════════════════════════
+   FULLSCREEN VIDEO
+   ══════════════════════════════════════ */
+
+/* ── Container: remove constraints in fullscreen ── */
+.video-player-container:fullscreen,
+.video-player-container:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  border-radius: 0 !important;
+  aspect-ratio: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #000;
+  z-index: 2147483647;
+}
+
+/* ── Video element: fill the fullscreen container ── */
+.video-player-container:fullscreen video,
+.video-player-container:fullscreen iframe,
+.video-player-container:-webkit-full-screen video,
+.video-player-container:-webkit-full-screen iframe {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+}
+
+/* ── Controls overlay: position at bottom of fullscreen ── */
+.video-player-container:fullscreen .video-controls-overlay,
+.video-player-container:-webkit-full-screen .video-controls-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+/* ── Subtitles: reposition in fullscreen ── */
+.video-player-container:fullscreen .subtitle-overlay,
+.video-player-container:-webkit-full-screen .subtitle-overlay {
+  bottom: 80px;
+  max-width: 70%;
+}
+
+/* ── Remove ring/glow in fullscreen ── */
+.video-player-container:fullscreen,
+.video-player-container:-webkit-full-screen {
+  box-shadow: none !important;
+  ring: none !important;
+}
+
+/* ── iOS Safari native fullscreen (video element level) ── */
+video:-webkit-full-screen {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  background: #000;
+}

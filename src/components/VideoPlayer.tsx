@@ -373,8 +373,8 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
           {/* Big center play overlay — visible only when paused */}
           {!playing && !loading && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-              <button onClick={togglePlay} className="pointer-events-auto w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-white/15 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-200 shadow-2xl">
-                <svg className="w-6 h-6 sm:w-9 sm:h-9 text-white ml-[-2px] sm:ml-[-3px]" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+              <button onClick={togglePlay} className="pointer-events-auto w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/15 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-200 shadow-xl">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white ml-[-1px] sm:ml-[-2px]" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
               </button>
             </div>
           )}

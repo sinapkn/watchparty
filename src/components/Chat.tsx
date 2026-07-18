@@ -126,22 +126,22 @@ export default function Chat({ messages, onSendMessage, username }: ChatProps) {
         <div ref={emojiRef} className="border-t border-white/5 bg-[#0f1117] flex-shrink-0 animate-fade-in">
           <div className="flex border-b border-white/5">
             {emojiCategories.map((c, i) => (
-              <button key={i} onClick={() => setEmojiTab(i)} className={`flex-1 py-2 sm:py-1.5 text-[10px] sm:text-[10px] font-medium transition ${emojiTab === i ? 'text-[var(--accent)] border-b-2 border-[var(--accent)]' : 'text-white/30 hover:text-white/50'}`} style={{ fontFamily: 'var(--font-body)' }}>{c.name}</button>
+              <button key={i} onClick={() => setEmojiTab(i)} className={`flex-1 py-2.5 text-xs font-medium transition-all ${emojiTab === i ? 'text-[var(--accent)] border-b-2 border-[var(--accent)] bg-[var(--accent)]/5' : 'text-white/30 hover:text-white/60 hover:bg-white/5'}`} style={{ fontFamily: 'var(--font-body)' }}>{c.name}</button>
             ))}
           </div>
           <div className="emoji-grid p-2 grid grid-cols-7 sm:grid-cols-8 gap-0.5 max-h-[120px] sm:max-h-[110px] overflow-y-auto">
             {emojiCategories[emojiTab].emojis.map(e => (
-              <button key={e} onClick={() => { setInput(p => p + e); inputRef.current?.focus() }} className="flex items-center justify-center text-lg hover:bg-white/5 rounded-lg transition active:scale-90">{e}</button>
+              <button key={e} onClick={() => { setInput(p => p + e); inputRef.current?.focus() }} className="flex items-center justify-center text-lg hover:bg-white/10 rounded-xl transition-all active:scale-85 h-9 sm:h-8">{e}</button>
             ))}
           </div>
         </div>
       )}
 
       {/* Quick reactions */}
-      <div className="px-1.5 sm:px-2 py-1 border-t border-white/5 flex-shrink-0">
-        <div className="flex gap-0.5 justify-center">
+      <div className="px-1.5 sm:px-2 py-1.5 border-t border-white/5 flex-shrink-0">
+        <div className="flex gap-1 justify-center">
           {['👍', '❤️', '😂', '🔥', '🎉', '👏', '😮', '💯'].map(e => (
-            <button key={e} onClick={() => onSendMessage(e)} className="reaction-btn w-9 h-9 sm:w-7 sm:h-7 flex items-center justify-center text-base hover:bg-white/5 rounded-lg transition active:scale-90">{e}</button>
+            <button key={e} onClick={() => onSendMessage(e)} className="reaction-btn w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center text-base sm:text-lg hover:bg-white/10 rounded-xl transition-all active:scale-85 active:bg-white/15">{e}</button>
           ))}
         </div>
       </div>
@@ -149,13 +149,13 @@ export default function Chat({ messages, onSendMessage, username }: ChatProps) {
       {/* Input */}
       <form onSubmit={send} className="p-2 sm:p-2.5 border-t border-white/5 flex-shrink-0 safe-bottom">
         <div className="flex gap-1.5 sm:gap-2 items-center">
-          <button type="button" onClick={() => setShowEmoji(!showEmoji)} className={`chat-emoji-btn w-11 h-11 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl transition flex-shrink-0 ${showEmoji ? 'bg-[var(--accent)]/15 text-[var(--accent)]' : 'text-white/30 hover:text-white/50 hover:bg-white/5 active:bg-white/10'}`}>
+          <button type="button" onClick={() => setShowEmoji(!showEmoji)} className={`chat-emoji-btn w-11 h-11 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl transition-all flex-shrink-0 active:scale-90 ${showEmoji ? 'bg-[var(--accent)]/15 text-[var(--accent)] shadow-inner' : 'text-white/30 hover:text-white/60 hover:bg-white/5 active:bg-white/10'}`}>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
             </svg>
           </button>
-          <input ref={inputRef} type="text" value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) send(e) }} placeholder="پیام..." className="chat-input-field flex-1 px-3 py-2 bg-white/5 border border-white/5 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-[var(--accent)]/50 text-[14px] sm:text-[13px] min-w-0 transition" style={{ fontFamily: 'var(--font-body)' }} />
-          <button type="submit" disabled={!input.trim()} className="chat-send-btn w-11 h-11 sm:w-9 sm:h-9 flex items-center justify-center bg-[var(--accent)] text-black rounded-xl hover:bg-[var(--accent-dim)] active:bg-[var(--accent-dim)] disabled:opacity-20 disabled:cursor-not-allowed transition flex-shrink-0">
+          <input ref={inputRef} type="text" value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) send(e) }} placeholder="پیام..." className="chat-input-field flex-1 px-3.5 py-2.5 bg-white/5 border border-white/5 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-[var(--accent)]/50 focus:bg-white/[0.07] text-[14px] sm:text-[13px] min-w-0 transition-all" style={{ fontFamily: 'var(--font-body)' }} />
+          <button type="submit" disabled={!input.trim()} className="chat-send-btn w-11 h-11 sm:w-10 sm:h-10 flex items-center justify-center bg-gradient-to-br from-[var(--accent)] to-cyan-400 text-black rounded-xl hover:shadow-lg hover:shadow-[var(--accent)]/20 active:scale-90 disabled:opacity-20 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:active:scale-100 transition-all flex-shrink-0">
             <svg className="w-4 h-4 rotate-180" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
           </button>
         </div>

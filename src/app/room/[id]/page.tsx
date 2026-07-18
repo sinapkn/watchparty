@@ -105,7 +105,7 @@ export default function RoomPage() {
       <header className="flex-shrink-0 border-b border-white/5 bg-[#0B0D11]/80 backdrop-blur-xl z-50 relative safe-top">
         <div className="max-w-[1800px] mx-auto px-3 sm:px-5 h-11 sm:h-12 flex items-center justify-between gap-2">
           {/* Back */}
-          <button onClick={() => router.push('/')} className="flex items-center gap-1 sm:gap-2 text-white/30 hover:text-white/60 transition text-xs sm:text-sm flex-shrink-0 min-w-0" style={{ fontFamily: 'var(--font-body)' }}>
+          <button onClick={() => router.push('/')} className="flex items-center gap-1.5 sm:gap-2 text-white/40 hover:text-white/80 transition-all text-xs sm:text-sm flex-shrink-0 min-w-0 min-h-[36px] px-2 -ml-2 rounded-lg hover:bg-white/5 active:bg-white/10 active:scale-95" style={{ fontFamily: 'var(--font-body)' }}>
             <svg className="w-4 h-4 rotate-180 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             <span className="hidden sm:inline">بازگشت</span>
           </button>

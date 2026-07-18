@@ -81,7 +81,7 @@ export default function UserSetup({ onJoin }: UserSetupProps) {
 
           <button
             type="submit"
-            className="w-full py-3 px-6 bg-gradient-to-l from-[var(--accent)] to-[#00B4D8] text-[var(--bg-deep)] font-bold rounded-lg hover:shadow-[var(--shadow-glow)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--bg-card)] transition-all duration-200 text-sm min-h-[48px]"
+            className="w-full py-3 px-6 bg-gradient-to-r from-[var(--accent)] to-cyan-400 text-[var(--bg-deep)] font-bold rounded-xl shadow-lg shadow-[var(--accent)]/20 hover:shadow-xl hover:shadow-[var(--accent)]/30 hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--bg-card)] transition-all duration-200 text-sm min-h-[48px]"
             style={{ fontFamily: 'var(--font-heading)' }}
           >
             ورود به اتاق

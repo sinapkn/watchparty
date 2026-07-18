@@ -126,12 +126,8 @@ export default function RoomPage() {
       {/* Main content — vertical on mobile, horizontal on desktop */}
       <div className="flex-1 flex flex-col lg:flex-row min-h-0 relative">
         {/* Video — full width on mobile, flex-1 on desktop */}
-        <div className="mobile-video-wrap w-full lg:flex-1 min-w-0 flex-shrink-0 lg:shrink-0 min-h-0">
-          <div className="w-full h-full flex items-center justify-center p-2 sm:p-3 lg:p-3 lg:pr-0">
-            <div className="w-full h-full flex items-center">
-              <VideoPlayer videoUrl={room.videoUrl} videoType={room.videoType as 'youtube' | 'direct'} onSync={handleSync} externalState={syncState} />
-            </div>
-          </div>
+        <div className="mobile-video-wrap w-full lg:flex-1 min-w-0 flex-shrink-0 lg:shrink-0 min-h-0 flex items-center justify-center p-2 sm:p-3 lg:p-3 lg:pr-0">
+          <VideoPlayer videoUrl={room.videoUrl} videoType={room.videoType as 'youtube' | 'direct'} onSync={handleSync} externalState={syncState} />
         </div>
 
         {/* Chat sidebar — desktop */}

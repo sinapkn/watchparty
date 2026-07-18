@@ -397,6 +397,13 @@ html, body {
   }
 }
 
+/* ── Mobile video: fill available height when no aspect-ratio forced ── */
+@media (max-width: 639px) {
+  .video-player-container {
+    height: 100%;
+  }
+}
+
 /* ── Mobile chat: ensure input is touch-friendly ── */
 @media (max-width: 1023px) {
   .chat-input-field {
@@ -511,7 +518,7 @@ html, body {
 .video-player-container:-webkit-full-screen iframe {
   width: 100% !important;
   height: 100% !important;
-  object-fit: cover !important;
+  object-fit: contain !important;
   border-radius: 0 !important;
 }
 
@@ -541,6 +548,6 @@ html, body {
 video:-webkit-full-screen {
   width: 100% !important;
   height: 100% !important;
-  object-fit: cover !important;
+  object-fit: contain !important;
   background: #000;
 }

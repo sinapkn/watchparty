@@ -307,7 +307,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
 
   if (videoType === 'youtube') {
     return (
-      <div ref={containerRef} className="video-player-container relative w-full aspect-video bg-black rounded-xl sm:rounded-2xl overflow-hidden ring-1 ring-white/5">
+      <div ref={containerRef} className="video-player-container relative w-full max-sm:aspect-auto sm:aspect-video bg-black rounded-xl sm:rounded-2xl overflow-hidden ring-1 ring-white/5">
         <iframe ref={playerRef} src={`https://www.youtube.com/embed/${videoUrl}?enablejsapi=1&rel=0`} className="absolute inset-0 w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
       </div>
     )
@@ -318,7 +318,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
   return (
     <div
       ref={containerRef}
-      className="video-player-container relative w-full aspect-video bg-black rounded-xl sm:rounded-2xl overflow-hidden group ring-1 ring-white/5 video-glow"
+      className="video-player-container relative w-full max-sm:aspect-auto sm:aspect-video bg-black rounded-xl sm:rounded-2xl overflow-hidden group ring-1 ring-white/5 video-glow"
       onMouseMove={show}
       onMouseLeave={() => { if (playing) setControls(false); setPanel('none') }}
       onTouchStart={show}
@@ -353,7 +353,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
         </div>
       )}
 
-      <video ref={videoRef} src={proxyUrl} className="w-full h-full object-cover" onPlay={onPlay} onPause={onPause} onSeeking={onSeeking} onTimeUpdate={onTime} onLoadedMetadata={e => { setDur(e.currentTarget.duration); setLoading(false) }} onWaiting={() => setLoading(true)} onCanPlay={() => setLoading(false)} onError={() => { setError(true); setLoading(false) }} onClick={togglePlay} crossOrigin="anonymous" preload="metadata" controls={false} />
+      <video ref={videoRef} src={proxyUrl} className="w-full h-full object-contain" onPlay={onPlay} onPause={onPause} onSeeking={onSeeking} onTimeUpdate={onTime} onLoadedMetadata={e => { setDur(e.currentTarget.duration); setLoading(false) }} onWaiting={() => setLoading(true)} onCanPlay={() => setLoading(false)} onError={() => { setError(true); setLoading(false) }} onClick={togglePlay} crossOrigin="anonymous" preload="metadata" controls={false} />
 
       {/* Subtitle */}
       {subText && (

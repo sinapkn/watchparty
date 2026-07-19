@@ -8,35 +8,24 @@ export default function Home() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(0,212,170,0.08),transparent)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_80%_80%,rgba(255,107,107,0.04),transparent)]" />
 
-      {/* Header */}
-      <header className="relative z-50 border-b border-[var(--border-subtle)] glass">
-        <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center bg-gradient-to-br from-[var(--accent)] to-[#00B4D8] shadow-[var(--shadow-glow)]">
-              <svg className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h1 className="text-base sm:text-lg font-bold text-[var(--text-primary)]" style={{ fontFamily: 'var(--font-heading)' }}>
-              Watch Party
-            </h1>
+      {/* Header with logo */}
+      <header className="relative z-20 max-w-6xl mx-auto px-4 py-4 sm:py-5 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-[var(--accent)] to-[#00B4D8] shadow-[var(--shadow-glow)]">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
           </div>
-          <p className="text-[var(--text-muted)] text-xs sm:text-sm hidden sm:block" style={{ fontFamily: 'var(--font-body)' }}>
-            تماشای همزمان ویدیو با دوستان
-          </p>
+          <span className="text-base sm:text-lg font-bold text-[var(--text-primary)]" style={{ fontFamily: 'var(--font-heading)' }}>
+            Watch Party
+          </span>
         </div>
       </header>
 
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-10 sm:py-16">
-        {/* Hero */}
+        {/* Hero - clean, headline-first */}
         <div className="text-center mb-10 sm:mb-16 animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] mb-5 sm:mb-6">
-            <span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse-dot" />
-            <span className="text-xs sm:text-sm text-[var(--text-secondary)]" style={{ fontFamily: 'var(--font-body)' }}>
-              رایگان و بدون ثبت‌نام
-            </span>
-          </div>
           <h2
             className="text-3xl sm:text-4xl md:text-6xl font-black text-[var(--text-primary)] mb-4 sm:mb-5 leading-tight"
             style={{ fontFamily: 'var(--font-heading)' }}
@@ -119,9 +108,16 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="mt-16 sm:mt-20 text-center border-t border-[var(--border-subtle)] pt-6 sm:pt-8 pb-6 sm:pb-4">
-          <p className="text-[var(--text-muted)] text-xs sm:text-sm" style={{ fontFamily: 'var(--font-body)' }}>
-            ساخته شده با عشق | Watch Party
-          </p>
+          <div className="flex flex-col items-center gap-1.5">
+            <p className="text-[var(--text-muted)] text-xs sm:text-sm" style={{ fontFamily: 'var(--font-body)' }}>
+              ساخته شده با عشق توسط
+            </p>
+            <div className="flex items-center justify-center gap-3 text-xs sm:text-sm" style={{ fontFamily: 'var(--font-body)' }}>
+              <span className="font-semibold text-[var(--text-secondary)]">SPK</span>
+              <span className="text-[var(--text-muted)]">&</span>
+              <span className="font-semibold text-[var(--text-secondary)]">MMDJ</span>
+            </div>
+          </div>
         </footer>
       </div>
     </main>

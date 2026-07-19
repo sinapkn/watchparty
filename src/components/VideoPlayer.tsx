@@ -539,7 +539,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
                       <div>
                         <span className="text-xs text-white/40 block mb-2" style={{ fontFamily: 'var(--font-body)' }}>فونت</span>
                         <div className="flex gap-1.5">
-                          {[{ k: 'default', l: 'پیش‌فرض' }, { k: 'sans', l: 'Sans' }, { k: 'mono', l: 'Mono' }].map(f => (
+                          {[{ k: 'default', l: 'پیش‌فرض' }, { k: 'sans', l: 'بی‌سری' }, { k: 'mono', l: 'تک‌فاصله' }].map(f => (
                             <button key={f.k} onClick={() => setSubFont(f.k)} className={`px-3 py-2 sm:py-1.5 rounded-lg text-xs transition ${subFont === f.k ? 'bg-[var(--accent)]/15 text-[var(--accent)]' : 'text-white/50 hover:bg-white/5'}`} style={{ fontFamily: f.k === 'mono' ? 'var(--font-mono)' : 'var(--font-body)' }}>{f.l}</button>
                           ))}
                         </div>

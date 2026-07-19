@@ -407,8 +407,18 @@ html, body {
 /* ── Mobile portrait: keep video natural, give chat room ── */
 @media (max-width: 639px) and (orientation: portrait) {
   .mobile-video-wrap {
-    max-height: 45vh;
-    padding: 0 5%; /* ≈90% width, centered — creates side gap so video isn't edge-to-edge */
+    max-height: 35vh;
+    padding: 6px 5% 2px; /* top gap from header, 90% width centered */
+  }
+
+  /* Force 16:9 on the inner wrapper (the div below mobile-video-wrap).
+     Reset height:100% (from Tailwind's h-full) so aspect-ratio is respected.
+     .video-player-container keeps height: 100% so controls (position: absolute)
+     have a valid reference frame. */
+  .mobile-video-wrap > div:first-child {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9;
   }
 
   /* Add a clean frame around the video container.

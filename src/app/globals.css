@@ -486,6 +486,51 @@ html, body {
   }
 }
 
+/* ── Mobile portrait: compact volume controls ── */
+@media (max-width: 639px) and (orientation: portrait) {
+  /* Volume slider always visible on mobile (hover doesn't work on touch) */
+  .video-player-container .group\/vol input[type="range"] {
+    width: 56px !important;
+    display: block !important;
+  }
+
+  /* Override the group-hover w-0 behavior via parent — force visible on mobile */
+  .video-player-container .group\/vol {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Tighter control bar on portrait mobile */
+  .video-player-container .video-controls-overlay .pointer-events-auto .flex.items-center.justify-between {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+
+  /* Smaller buttons on portrait mobile */
+  .video-player-container .video-controls-overlay button {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .video-player-container .video-controls-overlay button svg {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  /* Compact time text */
+  .video-player-container .video-controls-overlay .tabular-nums {
+    font-size: 10px !important;
+    margin-left: 2px !important;
+  }
+
+  /* Closer progress bar padding */
+  .video-player-container .group\/prog {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+}
+
 /* ══════════════════════════════════════
    SCROLL CONTAINMENT & SMOOTH SCROLL
    ══════════════════════════════════════ */

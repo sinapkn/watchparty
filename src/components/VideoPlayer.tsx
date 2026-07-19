@@ -392,7 +392,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
             </div>
 
             {/* Buttons row — compact, well-spaced */}
-            <div className="flex items-center justify-between px-2 sm:px-3 pb-2 sm:pb-3 pt-0.5">
+            <div className="flex items-center justify-between px-1 sm:px-3 pb-1 sm:pb-3 pt-0.5">
               {/* Left group: play, skip, volume, time */}
               <div className="flex items-center">
                 {/* Play/Pause — normal size icon, not oversized */}
@@ -425,7 +425,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
                       <svg className="w-[18px] h-[18px] sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" /></svg>
                     )}
                   </button>
-                  <input type="range" min="0" max="100" value={vol} onChange={onVol} className="w-0 group-hover/vol:w-20 transition-all duration-200 h-1 accent-[var(--accent)]" />
+                  <input type="range" min="0" max="100" value={vol} onChange={onVol} className="w-0 group-hover/vol:w-20 transition-all duration-200 h-1 accent-[var(--accent)] max-sm:w-14 max-sm:mx-1" />
                 </div>
 
                 {/* Time — always visible */}

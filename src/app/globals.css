@@ -411,32 +411,32 @@ html, body {
     padding: 6px 5% 2px; /* top gap from header, 90% width centered */
   }
 
-  /* Force 16:9 on the inner wrapper (the div below mobile-video-wrap).
-     Reset height:100% (from Tailwind's h-full) so aspect-ratio is respected.
-     .video-player-container keeps height: 100% so controls (position: absolute)
-     have a valid reference frame. */
-  .mobile-video-wrap > div:first-child {
+  /* Override the base mobile styles on the container itself:
+     - width: 100% (of padded parent = ~90vw)
+     - aspect-ratio: 16/9 gives it a DEFINITE height (CSS spec)
+     - position: relative (already set via Tailwind 'relative')
+     Controls with position:absolute; inset:0 work because the container
+     has a definite height from aspect-ratio. */
+  .video-player-container {
     width: 100% !important;
     height: auto !important;
     aspect-ratio: 16 / 9;
-  }
-
-  /* Add a clean frame around the video container.
-     Keep height: 100% so absolute-positioned controls (play btn, fullscreen, etc.)
-     have a valid reference frame. The video's object-fit: contain handles 16:9. */
-  .video-player-container {
+    /* Frame */
     border: 2px solid var(--border-default) !important;
     border-radius: var(--radius-lg) !important;
     box-shadow: var(--shadow-elevated), 0 0 0 1px var(--border-subtle) inset !important;
     background: #000;
   }
 
-  /* Video inside: keep natural aspect ratio */
+  /* Video inside fills the 16:9 box */
   .video-player-container video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
     border-radius: 10px;
   }
 
-  /* YouTube iframe inside */
+  /* YouTube iframe inside fills 16:9 box too */
   .video-player-container iframe {
     border-radius: 10px;
   }

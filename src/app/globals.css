@@ -385,7 +385,7 @@ html, body {
   }
 }
 
-/* ── Mobile video: fill available space, centered, full-screen like Netflix ── */
+/* ── Mobile video: natural aspect ratio, not stretched ── */
 @media (max-width: 639px) {
   .video-player-container {
     width: 100%;
@@ -401,6 +401,14 @@ html, body {
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+}
+
+/* ── Mobile portrait: keep video natural, give chat room ── */
+@media (max-width: 639px) and (orientation: portrait) {
+  .mobile-video-wrap {
+    max-height: 45vh;
+    min-height: 200px;
   }
 }
 
@@ -488,6 +496,15 @@ html, body {
 
 /* ── Mobile portrait: compact volume controls ── */
 @media (max-width: 639px) and (orientation: portrait) {
+  /* Video container — natural aspect ratio, not stretched */
+  .video-player-container {
+    aspect-ratio: 16 / 9;
+    max-height: 45vh;
+    align-self: center;
+    width: auto;
+    max-width: 100%;
+  }
+
   /* Volume slider always visible on mobile (hover doesn't work on touch) */
   .video-player-container .group\/vol input[type="range"] {
     width: 56px !important;

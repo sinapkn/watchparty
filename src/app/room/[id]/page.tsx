@@ -126,7 +126,7 @@ export default function RoomPage() {
       {/* Main content — vertical on mobile, horizontal on desktop */}
       <div className="flex-1 flex flex-col lg:flex-row min-h-0 relative">
         {/* Video — full width on mobile, flex-1 on desktop */}
-        <div className="mobile-video-wrap w-full min-w-0 min-h-0 lg:shrink-0 lg:p-3 lg:pr-0 flex-[5] max-h-[65vh] lg:max-h-none">
+        <div className="mobile-video-wrap w-full flex-1 min-w-0 min-h-0 lg:shrink-0 lg:p-3 lg:pr-0">
           <div className="w-full h-full">
             <VideoPlayer videoUrl={room.videoUrl} videoType={room.videoType as 'youtube' | 'direct'} onSync={handleSync} externalState={syncState} />
           </div>
@@ -137,8 +137,8 @@ export default function RoomPage() {
           <Chat messages={messages} onSendMessage={handleSend} username={username} />
         </div>
 
-        {/* Chat — mobile: smaller portion */}
-        <div className="lg:hidden min-h-0 flex flex-col px-2 pb-2 safe-bottom flex-[2] max-h-[35vh]">
+        {/* Chat — mobile: fills remaining space */}
+        <div className="lg:hidden flex-1 min-h-0 flex flex-col px-2 pb-2 safe-bottom">
           <Chat messages={messages} onSendMessage={handleSend} username={username} />
         </div>
       </div>

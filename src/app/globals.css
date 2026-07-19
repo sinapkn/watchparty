@@ -408,8 +408,36 @@ html, body {
 @media (max-width: 639px) and (orientation: portrait) {
   .mobile-video-wrap {
     max-height: 45vh;
-    min-height: 200px;
     padding: 0 5%; /* ≈90% width, centered — creates side gap so video isn't edge-to-edge */
+  }
+
+  /* Override the base mobile styles: let video size from WIDTH, not height,
+     so aspect-ratio: 16/9 renders correctly */
+  .video-player-container {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9;
+    max-width: 100%;
+    max-height: none !important;
+    align-self: center;
+    /* Frame */
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-elevated), 0 0 0 1px var(--border-subtle) inset;
+    background: #000;
+  }
+
+  /* Video inside fills the 16:9 box */
+  .video-player-container video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+
+  /* YouTube iframe inside fills 16:9 box too */
+  .video-player-container iframe {
+    border-radius: 10px;
   }
 }
 

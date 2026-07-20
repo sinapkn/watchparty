@@ -407,20 +407,16 @@ html, body {
 /* ── Mobile portrait: keep video natural, give chat room ── */
 @media (max-width: 639px) and (orientation: portrait) {
   .mobile-video-wrap {
-    max-height: 35vh;
+    max-height: 38vh;
     padding: 6px 5% 2px; /* top gap from header, 90% width centered */
   }
 
-  /* Override the base mobile styles on the container itself:
-     - width: 100% (of padded parent = ~90vw)
-     - aspect-ratio: 16/9 gives it a DEFINITE height (CSS spec)
-     - position: relative (already set via Tailwind 'relative')
-     Controls with position:absolute; inset:0 work because the container
-     has a definite height from aspect-ratio. */
+  /* Explicit 16:9 using calc — no aspect-ratio, no height:auto.
+     The container gets a DEFINITE pixel height so position:absolute
+     children (controls, fullscreen btn, etc.) always render correctly. */
   .video-player-container {
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 16 / 9;
+    width: 90vw !important;
+    height: calc(90vw * 9 / 16) !important;
     /* Frame */
     border: 2px solid var(--border-default) !important;
     border-radius: var(--radius-lg) !important;

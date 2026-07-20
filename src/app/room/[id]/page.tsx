@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { io, Socket } from 'socket.io-client'
 import VideoPlayer from '@/components/VideoPlayer'
 import Chat from '@/components/Chat'
+import { ChatSheet } from '@/components/ChatSheet'
 import RoomHeader from '@/components/RoomHeader'
 import UserSetup from '@/components/UserSetup'
 import { Room, Message, VideoSyncState } from '@/types'
@@ -59,9 +60,37 @@ export default function RoomPage() {
     return () => { socket.emit('leave-room', { roomId }); socket.disconnect() }
   }, [username, room, roomId])
 
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [sheetState, setSheetState] = useState<'collapsed' | 'peek' | 'full'>('collapsed')
+  const chatSheetRef = useRef<{ open: () => void; close: () => void; peek: () => void }>(null)
+  const lastMessageCountRef = useRef(messages.length)
+
+  // Track new messages and increment unread when sheet is collapsed
+  useEffect(() => {
+    const newMessages = messages.length - lastMessageCountRef.current
+    if (newMessages > 0 && sheetState === 'collapsed') {
+      const lastMsg = messages[messages.length - 1]
+      if (lastMsg.username !== username) {
+        setUnreadCount(c => c + newMessages)
+      }
+    }
+    lastMessageCountRef.current = messages.length
+  }, [messages, username, sheetState])
+
+  // Reset unread when sheet opens (using state dependency)
+  const prevSheetStateRef = useRef(sheetState)
+  useEffect(() => {
+    if (prevSheetStateRef.current === 'collapsed' && sheetState !== 'collapsed') {
+      setUnreadCount(0)
+    }
+    prevSheetStateRef.current = sheetState
+  }, [sheetState])
+
   const handleSend = useCallback((content: string) => {
     if (!socketRef.current || !username) return
     socketRef.current.emit('chat-message', { roomId, message: { id: Date.now().toString(), roomId, username, content, createdAt: new Date().toISOString() } })
+    // Reset unread when user sends
+    setUnreadCount(0)
   }, [roomId, username])
 
   const handleSync = useCallback((state: { isPlaying: boolean; currentTime: number }) => {
@@ -125,9 +154,9 @@ export default function RoomPage() {
 
       {/* Main content — vertical on mobile, horizontal on desktop */}
       <div className="flex-1 flex flex-col lg:flex-row min-h-0 relative">
-        {/* Video — full width on mobile, flex-1 on desktop */}
-        <div className="mobile-video-wrap w-full flex-1 min-w-0 min-h-0 lg:shrink-0 lg:p-3 lg:pr-0">
-          <div className="w-full h-full">
+        {/* Video — centered on mobile, flex-1 on desktop */}
+        <div className="w-full lg:flex-1 lg:shrink-0 lg:p-3 lg:pr-0 flex flex-col items-center justify-start pt-2 lg:pt-0">
+          <div className="w-full max-w-[600px] aspect-video lg:aspect-auto lg:h-full">
             <VideoPlayer videoUrl={room.videoUrl} videoType={room.videoType as 'youtube' | 'direct'} onSync={handleSync} externalState={syncState} />
           </div>
         </div>
@@ -136,12 +165,18 @@ export default function RoomPage() {
         <div className="hidden lg:flex w-[360px] flex-shrink-0 p-3 pl-0 flex-col min-h-0">
           <Chat messages={messages} onSendMessage={handleSend} username={username} />
         </div>
-
-        {/* Chat — mobile: fills remaining space */}
-        <div className="lg:hidden flex-1 min-h-0 flex flex-col px-2 pb-2 safe-bottom mt-4">
-          <Chat messages={messages} onSendMessage={handleSend} username={username} />
-        </div>
       </div>
+
+      {/* Mobile Chat Bottom Sheet */}
+      <ChatSheet
+        ref={chatSheetRef}
+        messages={messages}
+        onSendMessage={handleSend}
+        username={username}
+        unreadCount={unreadCount}
+        state={sheetState}
+        onStateChange={setSheetState}
+      />
     </div>
   )
 }

@@ -71,7 +71,7 @@ http://localhost:3000
 3. گزینه **PostgreSQL** را انتخاب کن.
 4. صبر کن تا سرویس PostgreSQL اجرا شود.
 
-### 4. تنظیم متغیرهای محیطی
+### 4. تنظیم متغیرهای محیطی (بخش اول — متغیر دیتابیس)
 
 وارد سرویس اصلی اپ در Railway شو و بخش **Variables** را باز کن. این متغیر را اضافه کن:
 
@@ -81,7 +81,41 @@ DATABASE_URL=${{Postgres.DATABASE_URL}}
 
 Railway این مقدار را از سرویس PostgreSQL همان پروژه می‌خواند.
 
-### 5. فایل Railway کانفیگ
+### 5. راه‌اندازی ویس چت (LiveKit)
+
+برای فعال کردن **ویس چت** در پروژه، نیاز به یک حساب **دوم** در Railway داری. چون هر حساب Railway محدودیت **۵ سرویس** دارد و پروژه Watch Party با PostgreSQL دو سرویس رو اشغال کرده. پس:
+
+#### قدم اول: یک حساب دوم در Railway بساز
+
+```bash
+۱. یک ایمیل دیگر (یا اکانت گوگل دیگر) بردار.
+۲. برو به https://railway.app و ثبت‌نام کن.
+۳. در این حساب جدید یک پروژه بساز.
+۴. گزینه New → Template را انتخاب کن.
+۵. عبارت LiveKit را جستجو و انتخاب کن. (این کار باعث ایجاد سرویس LiveKit و Redis می‌شود.)
+```
+
+#### قدم دوم: دریافت اطلاعات LiveKit
+
+```bash
+۱. به پروژه LiveKit در حساب دوم برو.
+۲. متغیرهای LIVEKIT_API_KEY و LIVEKIT_API_SECRET را از بخش Variables کپی کن.
+۳. از بخش Settings → Networking سرویس LiveKit یک Public Domain دریافت کن
+   (مثل: wss://livekit-xyz.up.railway.app).
+```
+
+#### قدم سوم: تنظیم متغیرها در حساب اصلی (Watch Party)
+
+به حساب اول (پروژه اصلی Watch Party) برگرد و در بخش Variables موارد زیر را اضافه کن:
+
+```env
+# LiveKit (ویس چت)
+LIVEKIT_API_KEY=          # مقداری که از حساب دوم کپی کردی
+LIVEKIT_API_SECRET=       # مقداری که از حساب دوم کپی کردی
+LIVEKIT_URL=wss://livekit-xyz.up.railway.app  # آدرس عمومی LiveKit
+```
+
+### 7. فایل Railway کانفیگ
 
 پروژه فایل `railway.json` دارد که کارهای زیر را انجام می‌دهد:
 
@@ -90,7 +124,7 @@ Railway این مقدار را از سرویس PostgreSQL همان پروژه م
 3. اجرای migrationهای Prisma
 4. اجرای اپ با `npm run start`
 
-### 6. اجرای Deploy
+### 8. اجرای Deploy
 
 داخل سرویس اصلی اپ روی Railway روی **Deploy** یا **Redeploy** کلیک کن.
 
@@ -118,3 +152,6 @@ Railway این مقدار را از سرویس PostgreSQL همان پروژه م
 |-------|-------|---------|
 | `DATABASE_URL` | آدرس اتصال PostgreSQL | `postgresql://user:pass@host:5432/db` |
 | `PORT` | پورت سرور | `3000` |
+| `LIVEKIT_API_KEY` | کلید API برای ویس چت | — |
+| `LIVEKIT_API_SECRET` | رمز API برای ویس چت | — |
+| `LIVEKIT_URL` | آدرس سرور LiveKit (ویس چت) | `wss://...` |

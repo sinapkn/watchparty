@@ -8,6 +8,7 @@ import Chat from '@/components/Chat'
 import RoomHeader from '@/components/RoomHeader'
 import UserSetup from '@/components/UserSetup'
 import { Room, Message, VideoSyncState } from '@/types'
+import { useVoice } from '@/hooks/useVoice'
 
 export default function RoomPage() {
   const params = useParams()
@@ -25,6 +26,7 @@ export default function RoomPage() {
   const [mobileTab, setMobileTab] = useState<'video' | 'chat'>('video')
   const [chatReadCount, setChatReadCount] = useState(0)
   const socketRef = useRef<Socket | null>(null)
+  const { join: joinVoice, leave: leaveVoice, toggleMute, connected: voiceConnected, muted: voiceMuted, participants: voiceParticipants, speaking } = useVoice(roomId, username || '')
 
   // Reset unread counter when switching to chat tab
   useEffect(() => {
@@ -128,8 +130,40 @@ export default function RoomPage() {
             <RoomHeader roomName={room.name} roomId={room.id} userCount={userCount} users={onlineUsers} />
           </div>
 
-          {/* User */}
+          {/* User + Voice */}
           <div className="flex items-center gap-1.5 sm:gap-2 text-white/40 text-xs sm:text-sm flex-shrink-0 min-w-0">
+            {/* Voice button */}
+            <button
+              onClick={voiceConnected ? leaveVoice : joinVoice}
+              className={`w-9 h-9 flex items-center justify-center rounded-lg transition-all flex-shrink-0 active:scale-90 ${
+                voiceConnected
+                  ? voiceMuted
+                    ? 'bg-red-500/15 text-red-400 border border-red-500/20'
+                    : 'bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/20'
+                  : 'bg-white/5 text-white/30 hover:text-white/60 border border-white/10'
+              }`}
+              title={voiceConnected ? (voiceMuted ? 'فعال کردن میکروفون' : 'قطع میکروفون') : 'ویس‌چت'}
+            >
+              {voiceConnected ? (
+                voiceMuted ? (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                  </svg>
+                )
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+              )}
+            </button>
+
+            <div className="w-px h-4 bg-white/10" />
+
             <span className="w-2 h-2 bg-[var(--accent)] rounded-full animate-pulse-dot flex-shrink-0" />
             <span className="truncate max-w-[70px] sm:max-w-none" style={{ fontFamily: 'var(--font-body)' }}>{username}</span>
           </div>

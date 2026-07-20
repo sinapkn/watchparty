@@ -42,6 +42,10 @@ prisma/dev.db-journal
 
 # vercel
 .vercel
+.mimocode
+.claude
+.zcode\plans
+
 
 # typescript
 *.tsbuildinfo

@@ -117,18 +117,21 @@ export default function Home() {
               <span className="text-[var(--text-muted)]">&</span>
               <span className="font-semibold text-[var(--text-secondary)]">MMDJ</span>
             </div>
+            <p className="text-[var(--text-muted)] text-[10px] sm:text-xs mt-2 opacity-60" style={{ fontFamily: 'var(--font-body)' }}>
+              تمامی حقوق این وب‌سایت محفوظ است © {new Date().getFullYear()}
+            </p>
           </div>
         </footer>
+      </div>
 
-        {/* Branding watermark — subtle, bottom-right */}
-        <div className="fixed bottom-2 left-2 sm:bottom-3 sm:left-3 z-0 pointer-events-none select-none">
-          <span
-            className="text-[9px] sm:text-[10px] tracking-widest text-white/[0.04] font-medium"
-            style={{ fontFamily: 'var(--font-heading)', letterSpacing: '0.15em' }}
-          >
-            sinapk
-          </span>
-        </div>
+      {/* Branding watermark — fixed, always visible */}
+      <div className="fixed bottom-2 left-2 sm:bottom-3 sm:left-3 z-50 pointer-events-none select-none">
+        <span
+          className="text-[10px] sm:text-[11px] tracking-wider text-white/[0.08] font-medium"
+          style={{ fontFamily: 'var(--font-heading)', letterSpacing: '0.1em' }}
+        >
+          sinapk
+        </span>
       </div>
     </main>
   )

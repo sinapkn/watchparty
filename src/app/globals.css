@@ -409,8 +409,8 @@ html, body {
   .mobile-video-wrap {
     flex: 0 0 auto !important;
     align-self: flex-start;
-    width: 84vw !important;
-    margin: 24px auto 0 !important; /* push DOWN from header, center horizontally */
+    width: 92vw !important;
+    margin: 40px auto 0 !important; /* push DOWN from header, center horizontally */
     padding: 0 !important;
   }
 

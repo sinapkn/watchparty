@@ -138,7 +138,7 @@ export default function RoomPage() {
         </div>
 
         {/* Chat — mobile: fills remaining space */}
-        <div className="lg:hidden flex-1 min-h-0 flex flex-col px-2 pb-2 safe-bottom">
+        <div className="lg:hidden flex-1 min-h-0 flex flex-col px-2 pb-2 safe-bottom mt-4">
           <Chat messages={messages} onSendMessage={handleSend} username={username} />
         </div>
       </div>

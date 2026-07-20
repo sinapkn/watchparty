@@ -125,12 +125,15 @@ app.prepare().then(() => {
       rooms.get(roomId)!.add(username)
 
       const userCount = rooms.get(roomId)!.size
+      const existingUsers = Array.from(rooms.get(roomId)!)
 
       if (isReconnect) {
         // User reconnected — don't emit join/leave spam, just update count
         io.to(roomId).emit('user-count', { userCount })
         console.log(`${username} reconnected to room ${roomId}. Count: ${userCount}`)
       } else {
+        // Send existing user list to the new joiner
+        socket.emit('room-users', { users: existingUsers })
         io.to(roomId).emit('user-joined', { username, userCount })
         console.log(`${username} joined room ${roomId}. Count: ${userCount}`)
       }

@@ -194,7 +194,10 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
   const emit = useCallback((p: boolean, t: number) => {
     localAction.current = true
     if (syncTimer.current) clearTimeout(syncTimer.current)
-    syncTimer.current = setTimeout(() => { onSync({ isPlaying: p, currentTime: t }); localAction.current = false }, 50)
+    syncTimer.current = setTimeout(() => {
+      try { onSync({ isPlaying: p, currentTime: t }) } catch { /* ignore sync errors */ }
+      finally { localAction.current = false }
+    }, 50)
   }, [onSync])
 
   const togglePlay = () => { const v = videoRef.current; if (v) v.paused ? v.play() : v.pause() }

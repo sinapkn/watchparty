@@ -106,7 +106,7 @@
   --color-background: var(--bg-deep);
   --color-foreground: var(--text-primary);
   --font-sans: var(--font-body);
-  --font-mono: var(--font-mono);
+  --font-mono: 'SF Mono', 'Cascadia Code', Consolas, monospace;
 }
 
 /* ── Base ── */
@@ -226,11 +226,21 @@ input[type="range"]:focus {
   50% { transform: translateY(-6px); }
 }
 
+/* ── Noise Texture (subtle) ── */
+.noise-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
 .animate-fade-in { animation: fade-in 0.3s ease-out both; }
 .animate-fade-in-up { animation: fade-in-up 0.4s ease-out both; }
 .animate-slide-in-right { animation: slide-in-right 0.3s ease-out both; }
 .animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
-.animate-float { animation: float 3s ease-in-out infinite; }
 
 /* ── Glass Effect ── */
 .glass {
@@ -248,48 +258,7 @@ input[type="range"]:focus {
   background-clip: text;
 }
 
-/* ── Subtitle Styles ── */
-.subtitle-display {
-  position: absolute;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  pointer-events: none;
-  z-index: 20;
-  max-width: 80%;
-}
-.subtitle-text {
-  display: inline-block;
-  padding: 4px 14px;
-  border-radius: var(--radius-sm);
-  background: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-  white-space: pre-line;
-  backdrop-filter: blur(4px);
-}
-
 /* ── Video Controls Overlay ── */
-.video-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-.video-overlay:hover,
-.video-overlay.visible {
-  opacity: 1;
-}
-.video-overlay > * {
-  pointer-events: auto;
-}
 
 /* ── Noise Texture (subtle) ── */
 .noise-bg::before {
@@ -329,12 +298,12 @@ input[type="range"]:focus {
 }
 
 /* ── Range Input — Video Player Override ── */
-video + .video-controls input[type="range"]::-webkit-slider-thumb {
+.video-controls-overlay input[type="range"]::-webkit-slider-thumb {
   width: 12px;
   height: 12px;
   margin-top: -4px;
 }
-video + .video-controls input[type="range"]::-webkit-slider-runnable-track {
+.video-controls-overlay input[type="range"]::-webkit-slider-runnable-track {
   height: 3px;
 }
 
@@ -650,7 +619,7 @@ html, body {
 .video-player-container:fullscreen,
 .video-player-container:-webkit-full-screen {
   box-shadow: none !important;
-  ring: none !important;
+  outline: none !important;
 }
 
 /* ── iOS Safari native fullscreen (video element level) ── */

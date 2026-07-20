@@ -23,7 +23,13 @@ export default function RoomPage() {
   const [onlineUsers, setOnlineUsers] = useState<string[]>([])
   const [syncState, setSyncState] = useState<VideoSyncState | null>(null)
   const [mobileTab, setMobileTab] = useState<'video' | 'chat'>('video')
+  const [chatReadCount, setChatReadCount] = useState(0)
   const socketRef = useRef<Socket | null>(null)
+
+  // Reset unread counter when switching to chat tab
+  useEffect(() => {
+    if (mobileTab === 'chat') setChatReadCount(messages.length)
+  }, [mobileTab, messages.length])
 
   useEffect(() => {
     const fetchRoom = async () => {
@@ -46,6 +52,9 @@ export default function RoomPage() {
     socket.on('connect', () => socket.emit('join-room', { roomId, username }))
     socket.on('chat-message', (m: Message) => setMessages(p => [...p, m]))
     socket.on('video-sync', (s: VideoSyncState) => setSyncState(s))
+    socket.on('room-users', (d: { users: string[] }) => {
+      setOnlineUsers(d.users)
+    })
     socket.on('user-count', (d: { userCount: number }) => {
       setUserCount(d.userCount)
     })
@@ -183,8 +192,8 @@ export default function RoomPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
             </svg>
             <span className="text-[11px] font-medium" style={{ fontFamily: 'var(--font-body)' }}>چت</span>
-            {/* Unread indicator — show when on video tab and new messages arrive */}
-            {mobileTab === 'video' && messages.length > 0 && (
+            {/* Unread indicator — show when new messages arrived since last chat view */}
+            {mobileTab === 'video' && messages.length > chatReadCount && (
               <span className="absolute top-2 right-1/2 translate-x-3 w-2 h-2 bg-[var(--accent-warm)] rounded-full animate-pulse-dot" />
             )}
           </button>

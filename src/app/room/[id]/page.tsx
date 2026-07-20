@@ -144,10 +144,8 @@ export default function RoomPage() {
         {/* ── Mobile: tab-based layout ── */}
         <div className="lg:hidden flex-1 min-h-0 relative">
           {/* Video tab */}
-          <div className={`absolute inset-0 ${mobileTab === 'video' ? 'block' : 'hidden'}`}>
-            <div className="w-full h-full p-1">
-              <VideoPlayer videoUrl={room.videoUrl} videoType={room.videoType as 'youtube' | 'direct'} onSync={handleSync} externalState={syncState} />
-            </div>
+          <div className={`absolute inset-0 ${mobileTab === 'video' ? 'block' : 'hidden'} bg-black`}>
+            <VideoPlayer videoUrl={room.videoUrl} videoType={room.videoType as 'youtube' | 'direct'} onSync={handleSync} externalState={syncState} />
           </div>
 
           {/* Chat tab */}

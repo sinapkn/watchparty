@@ -523,12 +523,12 @@ html, body {
     height: 4px !important;
   }
 
-  /* Smaller buttons on mobile */
-  .video-player-container .video-controls-overlay button {
+  /* Smaller buttons on mobile — but NOT fullscreen/settings/mute */
+  .video-player-container .video-controls-overlay button:not([data-fullscreen]):not([data-settings]):not([data-mute]) {
     width: 36px !important;
     height: 36px !important;
   }
-  .video-player-container .video-controls-overlay button svg {
+  .video-player-container .video-controls-overlay button:not([data-fullscreen]):not([data-settings]):not([data-mute]) svg {
     width: 15px !important;
     height: 15px !important;
   }
@@ -545,6 +545,12 @@ html, body {
     padding-right: 6px !important;
     padding-top: 4px !important;
     padding-bottom: 4px !important;
+  }
+
+  /* Volume track filled portion on mobile */
+  .video-player-container .group\/vol > div > div:first-child {
+    display: block !important;
+    height: 4px !important;
   }
 }
 

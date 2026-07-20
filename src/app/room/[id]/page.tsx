@@ -45,6 +45,9 @@ export default function RoomPage() {
     socket.on('connect', () => socket.emit('join-room', { roomId, username }))
     socket.on('chat-message', (m: Message) => setMessages(p => [...p, m]))
     socket.on('video-sync', (s: VideoSyncState) => setSyncState(s))
+    socket.on('user-count', (d: { userCount: number }) => {
+      setUserCount(d.userCount)
+    })
     socket.on('user-joined', (d: { username: string; userCount: number }) => {
       setOnlineUsers(p => p.includes(d.username) ? p : [...p, d.username])
       setUserCount(d.userCount)

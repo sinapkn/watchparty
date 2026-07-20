@@ -39,7 +39,9 @@ app.prepare().then(() => {
   const rooms = new Map<string, Set<string>>()
   const socketUserMap = new Map<string, { username: string; roomId: string }>()
   const emptyRoomTimers = new Map<string, ReturnType<typeof setTimeout>>()
-  const ROOM_EMPTY_TIMEOUT = 60_000 // 60 seconds
+  const pendingDisconnects = new Map<string, ReturnType<typeof setTimeout>>() // key: "roomId:username"
+  const ROOM_EMPTY_TIMEOUT = 120_000 // 120 seconds before deleting empty room
+  const DISCONNECT_GRACE = 15_000 // 15 seconds grace period for reconnection
 
   // ── Delete empty room from DB and cleanup ──
   async function deleteRoom(roomId: string) {
@@ -78,6 +80,34 @@ app.prepare().then(() => {
     }
   }
 
+  // ── Cancel pending disconnect for a user ──
+  function cancelPendingDisconnect(roomId: string, username: string) {
+    const key = `${roomId}:${username}`
+    const timer = pendingDisconnects.get(key)
+    if (timer) {
+      clearTimeout(timer)
+      pendingDisconnects.delete(key)
+      console.log(`[Grace] Pending disconnect cancelled for ${username} in room ${roomId}`)
+      return true // was pending (i.e. reconnection)
+    }
+    return false
+  }
+
+  // ── Actually remove a disconnected user after grace period expires ──
+  function finalizeDisconnect(roomId: string, username: string, socketId: string) {
+    const roomUsers = rooms.get(roomId)
+    if (roomUsers) {
+      roomUsers.delete(username)
+      if (roomUsers.size === 0) {
+        startEmptyTimer(roomId)
+      } else {
+        io.to(roomId).emit('user-left', { username, userCount: roomUsers.size })
+        console.log(`[Grace] ${username} removed from room ${roomId} after grace period. Count: ${roomUsers.size}`)
+      }
+    }
+    socketUserMap.delete(socketId)
+  }
+
   io.on('connection', (socket) => {
     console.log('User connected:', socket.id)
 
@@ -85,25 +115,37 @@ app.prepare().then(() => {
       socket.join(roomId)
       socketUserMap.set(socket.id, { username, roomId })
 
-      // Cancel any pending deletion timer
+      // Cancel any pending deletion timer for the room
       cancelEmptyTimer(roomId)
+
+      // Check if this user has a pending disconnect (reconnection scenario)
+      const isReconnect = cancelPendingDisconnect(roomId, username)
 
       if (!rooms.has(roomId)) rooms.set(roomId, new Set())
       rooms.get(roomId)!.add(username)
 
       const userCount = rooms.get(roomId)!.size
-      io.to(roomId).emit('user-joined', { username, userCount })
-      console.log(`${username} joined room ${roomId}. Count: ${userCount}`)
+
+      if (isReconnect) {
+        // User reconnected — don't emit join/leave spam, just update count
+        io.to(roomId).emit('user-count', { userCount })
+        console.log(`${username} reconnected to room ${roomId}. Count: ${userCount}`)
+      } else {
+        io.to(roomId).emit('user-joined', { username, userCount })
+        console.log(`${username} joined room ${roomId}. Count: ${userCount}`)
+      }
     })
 
     socket.on('leave-room', ({ roomId }) => {
       const userData = socketUserMap.get(socket.id)
       if (userData) {
+        // Cancel any pending disconnect for this user (they explicitly left)
+        cancelPendingDisconnect(roomId, userData.username)
+
         const roomUsers = rooms.get(roomId)
         if (roomUsers) {
           roomUsers.delete(userData.username)
           if (roomUsers.size === 0) {
-            // Room is empty — start deletion timer
             startEmptyTimer(roomId)
           }
         }
@@ -111,6 +153,9 @@ app.prepare().then(() => {
         const userCount = rooms.get(roomId)?.size || 0
         socket.to(roomId).emit('user-left', { username: userData.username, userCount })
         console.log(`${userData.username} left room ${roomId}. Count: ${userCount}`)
+
+        // Clean up socket mapping
+        socketUserMap.delete(socket.id)
       }
       socket.leave(roomId)
     })
@@ -127,19 +172,15 @@ app.prepare().then(() => {
       const userData = socketUserMap.get(socket.id)
       if (userData) {
         const { username, roomId } = userData
-        const roomUsers = rooms.get(roomId)
+        console.log(`${username} disconnected from room ${roomId} — grace period started (${DISCONNECT_GRACE / 1000}s)`)
 
-        if (roomUsers) {
-          roomUsers.delete(username)
-          if (roomUsers.size === 0) {
-            startEmptyTimer(roomId)
-          } else {
-            io.to(roomId).emit('user-left', { username, userCount: roomUsers.size })
-          }
-        }
-
-        socketUserMap.delete(socket.id)
-        console.log(`${username} disconnected from room ${roomId}`)
+        // Start grace period — don't remove user yet
+        const key = `${roomId}:${username}`
+        const timer = setTimeout(() => {
+          pendingDisconnects.delete(key)
+          finalizeDisconnect(roomId, username, socket.id)
+        }, DISCONNECT_GRACE)
+        pendingDisconnects.set(key, timer)
       } else {
         console.log('User disconnected:', socket.id)
       }

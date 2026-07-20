@@ -226,11 +226,22 @@ input[type="range"]:focus {
   50% { transform: translateY(-6px); }
 }
 
+@keyframes slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slide-down {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(100%); opacity: 0; }
+}
+
 .animate-fade-in { animation: fade-in 0.3s ease-out both; }
 .animate-fade-in-up { animation: fade-in-up 0.4s ease-out both; }
 .animate-slide-in-right { animation: slide-in-right 0.3s ease-out both; }
 .animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
 .animate-float { animation: float 3s ease-in-out infinite; }
+.animate-slide-up { animation: slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-slide-down { animation: slide-down 0.25s ease-in both; }
 
 /* ── Glass Effect ── */
 .glass {
@@ -409,7 +420,7 @@ html, body {
   .mobile-video-wrap {
     flex: 0 0 auto !important;
     align-self: flex-start;
-    width: 92vw !important;
+    width: 78vw !important;
     margin: 40px auto 0 !important; /* push DOWN from header, center horizontally */
     padding: 0 !important;
   }
@@ -418,8 +429,8 @@ html, body {
      The container gets a DEFINITE pixel height so position:absolute
      children (controls, fullscreen btn, etc.) always render correctly. */
   .video-player-container {
-    width: 84vw !important;
-    height: calc(84vw * 9 / 16) !important;
+    width: 100% !important;
+    height: calc(78vw * 9 / 16) !important;
     margin-top: 12px; /* push the frame DOWN from header */
     /* Frame */
     border: 2px solid var(--border-default) !important;
@@ -668,4 +679,91 @@ video:-webkit-full-screen {
   height: 100% !important;
   object-fit: contain !important;
   background: #000;
+}
+
+/* ══════════════════════════════════════
+   CHAT BOTTOM SHEET (Mobile)
+   ══════════════════════════════════════ */
+
+.chat-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--bg-surface);
+  border-top-left-radius: var(--radius-xl);
+  border-top-right-radius: var(--radius-xl);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Handle bar */
+.chat-sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--border-default);
+  border-radius: 2px;
+  margin: 10px auto 6px;
+  flex-shrink: 0;
+}
+
+/* Collapsed — only handle visible (~48px) */
+.chat-sheet.collapsed {
+  transform: translateY(calc(100% - 48px));
+}
+
+/* Peek — ~40vh visible */
+.chat-sheet.peek {
+  transform: translateY(calc(100% - 40vh));
+}
+
+/* Full — ~85vh visible */
+.chat-sheet.full {
+  transform: translateY(0);
+  max-height: 85vh;
+}
+
+/* Sheet content */
+.chat-sheet-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Ensure chat component fills sheet */
+.chat-sheet-content > div {
+  height: 100%;
+  min-height: 0;
+}
+
+/* Backdrop overlay when sheet is open */
+.chat-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.chat-sheet-backdrop.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Mobile-only */
+@media (min-width: 1024px) {
+  .chat-sheet {
+    display: none !important;
+  }
+  .chat-sheet-backdrop {
+    display: none !important;
+  }
 }

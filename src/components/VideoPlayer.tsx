@@ -414,7 +414,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
 
                 <div className="w-px h-4 bg-white/10 mx-0.5" />
 
-                {/* Volume — compact on mobile */}
+                {/* Volume */}
                 <div className="flex items-center group/vol">
                   <button onClick={toggleMute} className="w-10 h-10 sm:w-10 sm:h-10 flex items-center justify-center text-white/70 hover:text-white rounded-lg hover:bg-white/10 active:bg-white/15 transition-all">
                     {muted || vol === 0 ? (
@@ -425,7 +425,9 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
                       <svg className="w-[18px] h-[18px] sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" /></svg>
                     )}
                   </button>
-                  <input type="range" min="0" max="100" value={vol} onChange={onVol} className="w-0 group-hover/vol:w-20 transition-all duration-200 h-1 accent-[var(--accent)] max-sm:w-14 max-sm:mx-1" />
+                  <div className="relative w-0 group-hover/vol:w-20 max-sm:w-20 transition-all duration-200 overflow-hidden">
+                    <input type="range" min="0" max="100" value={vol} onChange={onVol} className="w-full h-1 accent-[var(--accent)]" />
+                  </div>
                 </div>
 
                 {/* Time — always visible */}
@@ -448,21 +450,21 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
                   </button>
 
                   {panel === 'main' && (
-                    <div className="absolute bottom-full right-0 mb-3 bg-[#1c1f26] border border-white/10 rounded-2xl p-1.5 min-w-[220px] shadow-2xl" onClick={e => e.stopPropagation()}>
-                      <button onClick={() => setPanel('subtitles')} className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm text-white/70 hover:bg-white/5 hover:text-white transition">
+                    <div className="absolute bottom-full mb-3 sm:right-0 left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 bg-[#1c1f26] border border-white/10 rounded-2xl p-1.5 w-[220px] sm:min-w-[220px] shadow-2xl max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                      <button onClick={() => setPanel('subtitles')} className="w-full flex items-center justify-between px-3.5 py-3 sm:py-2.5 rounded-xl text-sm text-white/70 hover:bg-white/5 hover:text-white transition active:bg-white/10">
                         <span className="flex items-center gap-2.5" style={{ fontFamily: 'var(--font-body)' }}>زیرنویس</span>
                         <span className="text-xs text-white/30">{activeSub >= 0 ? subs[activeSub]?.label : 'خاموش'}</span>
                       </button>
-                      {audios.length > 1 && <button onClick={() => setPanel('audio')} className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm text-white/70 hover:bg-white/5 hover:text-white transition">
+                      {audios.length > 1 && <button onClick={() => setPanel('audio')} className="w-full flex items-center justify-between px-3.5 py-3 sm:py-2.5 rounded-xl text-sm text-white/70 hover:bg-white/5 hover:text-white transition active:bg-white/10">
                         <span className="flex items-center gap-2.5" style={{ fontFamily: 'var(--font-body)' }}>صدا</span>
                         <span className="text-xs text-white/30">{audios[activeAudio]?.label || 'پیش‌فرض'}</span>
                       </button>}
-                      <button onClick={() => setPanel('subtitle-style')} className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm text-white/70 hover:bg-white/5 hover:text-white transition">
+                      <button onClick={() => setPanel('subtitle-style')} className="w-full flex items-center justify-between px-3.5 py-3 sm:py-2.5 rounded-xl text-sm text-white/70 hover:bg-white/5 hover:text-white transition active:bg-white/10">
                         <span className="flex items-center gap-2.5" style={{ fontFamily: 'var(--font-body)' }}>ظاهر زیرنویس</span>
                       </button>
                       <div className="border-t border-white/5 mt-1 pt-1">
-                        <button onClick={() => fileRef.current?.click()} className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-[var(--accent)] hover:bg-[var(--accent)]/10 transition font-medium" style={{ fontFamily: 'var(--font-body)' }}>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <button onClick={() => fileRef.current?.click()} className="w-full flex items-center gap-2.5 px-3.5 py-3 sm:py-2.5 rounded-xl text-sm text-[var(--accent)] hover:bg-[var(--accent)]/10 transition font-medium active:bg-[var(--accent)]/15" style={{ fontFamily: 'var(--font-body)' }}>
+                          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                           </svg>
                           بارگذاری فایل زیرنویس
@@ -472,25 +474,25 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
                   )}
 
                   {panel === 'subtitles' && (
-                    <div className="absolute bottom-full right-0 mb-3 bg-[#1c1f26] border border-white/10 rounded-2xl p-2 min-w-[240px] shadow-2xl" onClick={e => e.stopPropagation()}>
-                      <button onClick={() => setPanel('main')} className="flex items-center gap-1 text-xs text-white/40 hover:text-white mb-2 px-2">
+                    <div className="absolute bottom-full mb-3 sm:right-0 left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 bg-[#1c1f26] border border-white/10 rounded-2xl p-2 w-[240px] sm:min-w-[240px] shadow-2xl max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                      <button onClick={() => setPanel('main')} className="flex items-center gap-1 text-xs text-white/40 hover:text-white mb-2 px-2 py-1">
                         <svg className="w-3 h-3 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         بازگشت
                       </button>
                       <p className="text-[11px] text-white/30 px-2 mb-1 uppercase tracking-wider" style={{ fontFamily: 'var(--font-body)' }}>زیرنویس</p>
-                      <button onClick={() => { setActiveSub(-1); setPanel('none') }} className={`w-full text-right text-sm px-3 py-2 rounded-xl transition ${activeSub === -1 ? 'bg-[var(--accent)]/15 text-[var(--accent)]' : 'text-white/60 hover:bg-white/5'}`} style={{ fontFamily: 'var(--font-body)' }}>خاموش</button>
+                      <button onClick={() => { setActiveSub(-1); setPanel('none') }} className={`w-full text-right text-sm px-3 py-2.5 sm:py-2 rounded-xl transition active:bg-white/10 ${activeSub === -1 ? 'bg-[var(--accent)]/15 text-[var(--accent)]' : 'text-white/60 hover:bg-white/5'}`} style={{ fontFamily: 'var(--font-body)' }}>خاموش</button>
                       {subs.map((tr, i) => {
                         const isMKV = tr.language === 'mkv'
                         return (
-                          <button key={i} onClick={() => { setActiveSub(i); setPanel('none') }} className={`w-full text-right text-sm px-3 py-2 rounded-xl transition ${activeSub === i ? 'bg-[var(--accent)]/15 text-[var(--accent)]' : 'text-white/60 hover:bg-white/5'}`} style={{ fontFamily: 'var(--font-body)' }}>
+                          <button key={i} onClick={() => { setActiveSub(i); setPanel('none') }} className={`w-full text-right text-sm px-3 py-2.5 sm:py-2 rounded-xl transition active:bg-white/10 ${activeSub === i ? 'bg-[var(--accent)]/15 text-[var(--accent)]' : 'text-white/60 hover:bg-white/5'}`} style={{ fontFamily: 'var(--font-body)' }}>
                             {isMKV && <span className="text-[10px] bg-[var(--accent)]/20 text-[var(--accent)] px-1.5 py-0.5 rounded-md ml-1.5">MKV</span>}
                             {tr.label}
                           </button>
                         )
                       })}
                       <div className="border-t border-white/5 mt-1 pt-1">
-                        <button onClick={() => fileRef.current?.click()} className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm text-[var(--accent)] hover:bg-[var(--accent)]/10 transition font-medium" style={{ fontFamily: 'var(--font-body)' }}>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <button onClick={() => fileRef.current?.click()} className="w-full flex items-center gap-2 px-3 py-3 sm:py-2.5 rounded-xl text-sm text-[var(--accent)] hover:bg-[var(--accent)]/10 transition font-medium active:bg-[var(--accent)]/15" style={{ fontFamily: 'var(--font-body)' }}>
+                          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                           </svg>
                           بارگذاری فایل زیرنویس
@@ -500,14 +502,14 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
                   )}
 
                   {panel === 'audio' && (
-                    <div className="absolute bottom-full right-0 mb-3 bg-[#1c1f26] border border-white/10 rounded-2xl p-2 min-w-[220px] shadow-2xl" onClick={e => e.stopPropagation()}>
-                      <button onClick={() => setPanel('main')} className="flex items-center gap-1 text-xs text-white/40 hover:text-white mb-2 px-2">
+                    <div className="absolute bottom-full mb-3 sm:right-0 left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 bg-[#1c1f26] border border-white/10 rounded-2xl p-2 w-[220px] sm:min-w-[220px] shadow-2xl max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                      <button onClick={() => setPanel('main')} className="flex items-center gap-1 text-xs text-white/40 hover:text-white mb-2 px-2 py-1">
                         <svg className="w-3 h-3 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         بازگشت
                       </button>
                       <p className="text-[11px] text-white/30 px-2 mb-1 uppercase tracking-wider" style={{ fontFamily: 'var(--font-body)' }}>صدا</p>
                       {audios.map((tr, i) => (
-                        <button key={i} onClick={() => { setActiveAudio(i); const v = videoRef.current as (HTMLVideoElement & { audioTracks?: AudioTrackList }) | null; if (v?.audioTracks) for (let j = 0; j < v.audioTracks.length; j++) v.audioTracks[j].enabled = j === i; setPanel('none') }} className={`w-full text-right text-sm px-3 py-2 rounded-xl transition ${activeAudio === i ? 'bg-[var(--accent)]/15 text-[var(--accent)]' : 'text-white/60 hover:bg-white/5'}`} style={{ fontFamily: 'var(--font-body)' }}>
+                        <button key={i} onClick={() => { setActiveAudio(i); const v = videoRef.current as (HTMLVideoElement & { audioTracks?: AudioTrackList }) | null; if (v?.audioTracks) for (let j = 0; j < v.audioTracks.length; j++) v.audioTracks[j].enabled = j === i; setPanel('none') }} className={`w-full text-right text-sm px-3 py-2.5 sm:py-2 rounded-xl transition active:bg-white/10 ${activeAudio === i ? 'bg-[var(--accent)]/15 text-[var(--accent)]' : 'text-white/60 hover:bg-white/5'}`} style={{ fontFamily: 'var(--font-body)' }}>
                           {tr.label}{tr.language && <span className="text-xs text-white/30 mr-1">({tr.language})</span>}
                         </button>
                       ))}
@@ -515,8 +517,8 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
                   )}
 
                   {panel === 'subtitle-style' && (
-                    <div className="absolute bottom-full right-0 mb-3 bg-[#1c1f26] border border-white/10 rounded-2xl p-4 min-w-[280px] shadow-2xl" onClick={e => e.stopPropagation()}>
-                      <button onClick={() => setPanel('main')} className="flex items-center gap-1 text-xs text-white/40 hover:text-white mb-4 px-1">
+                    <div className="absolute bottom-full mb-3 sm:right-0 left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 bg-[#1c1f26] border border-white/10 rounded-2xl p-4 w-[280px] sm:min-w-[280px] shadow-2xl max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                      <button onClick={() => setPanel('main')} className="flex items-center gap-1 text-xs text-white/40 hover:text-white mb-4 px-1 py-1">
                         <svg className="w-3 h-3 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         بازگشت
                       </button>
@@ -530,9 +532,9 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
                       </div>
                       <div className="mb-4">
                         <span className="text-xs text-white/40 block mb-2" style={{ fontFamily: 'var(--font-body)' }}>رنگ</span>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2.5 sm:gap-2 justify-center sm:justify-start">
                           {['#ffffff', '#ffff00', '#00ff00', '#00ffff', '#ff6b6b'].map(c => (
-                            <button key={c} onClick={() => setSubColor(c)} className={`w-8 h-8 sm:w-7 sm:h-7 rounded-full border-2 transition-all ${subColor === c ? 'border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'}`} style={{ background: c }} />
+                            <button key={c} onClick={() => setSubColor(c)} className={`w-9 h-9 sm:w-7 sm:h-7 rounded-full border-2 transition-all active:scale-90 ${subColor === c ? 'border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'}`} style={{ background: c }} />
                           ))}
                         </div>
                       </div>
@@ -540,7 +542,7 @@ export default function VideoPlayer({ videoUrl, videoType, onSync, externalState
                         <span className="text-xs text-white/40 block mb-2" style={{ fontFamily: 'var(--font-body)' }}>فونت</span>
                         <div className="flex gap-1.5">
                           {[{ k: 'default', l: 'پیش‌فرض' }, { k: 'sans', l: 'بی‌سری' }, { k: 'mono', l: 'تک‌فاصله' }].map(f => (
-                            <button key={f.k} onClick={() => setSubFont(f.k)} className={`px-3 py-2 sm:py-1.5 rounded-lg text-xs transition ${subFont === f.k ? 'bg-[var(--accent)]/15 text-[var(--accent)]' : 'text-white/50 hover:bg-white/5'}`} style={{ fontFamily: f.k === 'mono' ? 'var(--font-mono)' : 'var(--font-body)' }}>{f.l}</button>
+                            <button key={f.k} onClick={() => setSubFont(f.k)} className={`px-3 py-2.5 sm:py-1.5 rounded-lg text-xs transition active:bg-white/10 ${subFont === f.k ? 'bg-[var(--accent)]/15 text-[var(--accent)]' : 'text-white/50 hover:bg-white/5'}`} style={{ fontFamily: f.k === 'mono' ? 'var(--font-mono)' : 'var(--font-body)' }}>{f.l}</button>
                           ))}
                         </div>
                       </div>

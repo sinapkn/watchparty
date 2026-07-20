@@ -369,19 +369,24 @@ html, body {
 /* ── Touch-optimized range inputs ── */
 @media (pointer: coarse) {
   input[type="range"]::-webkit-slider-thumb {
-    width: 20px;
-    height: 20px;
-    margin-top: -8px;
+    width: 22px;
+    height: 22px;
+    margin-top: -9px;
   }
   input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
   }
   input[type="range"]::-webkit-slider-runnable-track {
     height: 6px;
   }
   input[type="range"]::-moz-range-track {
     height: 6px;
+  }
+  /* Larger touch area around range inputs */
+  input[type="range"] {
+    padding: 8px 0;
+    margin: 0;
   }
 }
 
@@ -481,16 +486,41 @@ html, body {
   }
 }
 
-/* ── Mobile: volume slider always visible (hover doesn't work on touch) ── */
+/* ── Mobile: volume slider — always visible, touch-optimized ── */
 @media (max-width: 1023px) {
-  .video-player-container .group\/vol input[type="range"] {
-    width: 56px !important;
-    display: block !important;
-  }
-
   .video-player-container .group\/vol {
     display: flex !important;
     align-items: center !important;
+  }
+
+  .video-player-container .group\/vol > div {
+    width: 80px !important;
+    overflow: visible !important;
+  }
+
+  .video-player-container .group\/vol input[type="range"] {
+    display: block !important;
+    width: 100% !important;
+    height: 4px !important;
+  }
+
+  .video-player-container .group\/vol input[type="range"]::-webkit-slider-thumb {
+    width: 18px !important;
+    height: 18px !important;
+    margin-top: -7px !important;
+  }
+
+  .video-player-container .group\/vol input[type="range"]::-moz-range-thumb {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .video-player-container .group\/vol input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px !important;
+  }
+
+  .video-player-container .group\/vol input[type="range"]::-moz-range-track {
+    height: 4px !important;
   }
 
   /* Smaller buttons on mobile */

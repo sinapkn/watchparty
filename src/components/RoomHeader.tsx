@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 interface RoomHeaderProps {
   roomName: string
@@ -12,6 +12,19 @@ interface RoomHeaderProps {
 export default function RoomHeader({ roomName, roomId, userCount, users }: RoomHeaderProps) {
   const [copied, setCopied] = useState(false)
   const [showUsers, setShowUsers] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!showUsers) return
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowUsers(false)
+      }
+    }
+    setTimeout(() => document.addEventListener('mousedown', handler), 0)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [showUsers])
 
   const copyLink = async () => {
     const url = `${window.location.origin}/room/${roomId}`
@@ -32,10 +45,28 @@ export default function RoomHeader({ roomName, roomId, userCount, users }: RoomH
         <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse-dot flex-shrink-0" />
         <div className="min-w-0">
           <h1 className="text-xs sm:text-sm font-bold text-white truncate max-w-[120px] sm:max-w-none" style={{ fontFamily: 'var(--font-heading)' }}>{roomName}</h1>
-          <button onClick={() => setShowUsers(!showUsers)} className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-white/40 hover:text-white/70 transition-all min-h-[24px] px-1 -mx-1 rounded-md hover:bg-white/5" style={{ fontFamily: 'var(--font-body)' }}>
-            <span>{userCount} نفر آنلاین</span>
-            <svg className={`w-3 h-3 transition-transform duration-200 ${showUsers ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-          </button>
+          <div className="relative inline-block" ref={dropdownRef}>
+            <button onClick={() => setShowUsers(!showUsers)} className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-white/40 hover:text-white/70 transition-all min-h-[24px] px-1 -mx-1 rounded-md hover:bg-white/5" style={{ fontFamily: 'var(--font-body)' }}>
+              <span>{userCount} نفر آنلاین</span>
+              <svg className={`w-3 h-3 transition-transform duration-200 ${showUsers ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+            </button>
+
+            {/* Users dropdown — positioned relative to button */}
+            {showUsers && (
+              <div className="absolute top-full mt-2 ltr left-0 z-50 animate-fade-in">
+                <div className="bg-[#1c1f26] border border-white/10 rounded-xl p-3 shadow-2xl flex flex-wrap gap-1.5 min-w-[160px]">
+                  {users.length === 0 ? (
+                    <span className="text-[11px] text-white/30 px-1" style={{ fontFamily: 'var(--font-body)' }}>کسی آنلاین نیست</span>
+                  ) : users.map((u, i) => (
+                    <span key={i} className="px-2.5 py-1.5 bg-white/5 text-white/70 rounded-lg text-[11px] flex items-center gap-1.5" style={{ fontFamily: 'var(--font-body)' }}>
+                      <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full flex-shrink-0" />
+                      {u}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -47,20 +78,6 @@ export default function RoomHeader({ roomName, roomId, userCount, users }: RoomH
           <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg><span className="hidden sm:inline">اشتراک‌گذاری</span></>
         )}
       </button>
-
-      {/* Users dropdown */}
-      {showUsers && (
-        <div className="absolute top-full mt-2 z-50 animate-fade-in" style={{ left: '-8px' }}>
-          <div className="bg-[#1c1f26] border border-white/10 rounded-xl p-3 shadow-2xl flex flex-wrap gap-1.5 min-w-[160px]">
-            {users.map((u, i) => (
-              <span key={i} className="px-2.5 py-1.5 bg-white/5 text-white/70 rounded-lg text-[11px] flex items-center gap-1.5" style={{ fontFamily: 'var(--font-body)' }}>
-                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full flex-shrink-0" />
-                {u}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

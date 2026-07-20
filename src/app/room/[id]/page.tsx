@@ -26,7 +26,8 @@ export default function RoomPage() {
   const [mobileTab, setMobileTab] = useState<'video' | 'chat'>('video')
   const [chatReadCount, setChatReadCount] = useState(0)
   const socketRef = useRef<Socket | null>(null)
-  const { join: joinVoice, leave: leaveVoice, toggleMute, connected: voiceConnected, muted: voiceMuted, participants: voiceParticipants, speaking } = useVoice(roomId, username || '')
+  // Only create voice when username is available (after UserSetup)
+  const voice = useVoice(roomId, username ?? '')
 
   // Reset unread counter when switching to chat tab
   useEffect(() => {
@@ -134,18 +135,18 @@ export default function RoomPage() {
           <div className="flex items-center gap-1.5 sm:gap-2 text-white/40 text-xs sm:text-sm flex-shrink-0 min-w-0">
             {/* Voice button */}
             <button
-              onClick={voiceConnected ? leaveVoice : joinVoice}
+              onClick={voice.connected ? voice.leave : voice.join}
               className={`w-9 h-9 flex items-center justify-center rounded-lg transition-all flex-shrink-0 active:scale-90 ${
-                voiceConnected
-                  ? voiceMuted
+                voice.connected
+                  ? voice.muted
                     ? 'bg-red-500/15 text-red-400 border border-red-500/20'
                     : 'bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/20'
                   : 'bg-white/5 text-white/30 hover:text-white/60 border border-white/10'
               }`}
-              title={voiceConnected ? (voiceMuted ? 'فعال کردن میکروفون' : 'قطع میکروفون') : 'ویس‌چت'}
+              title={voice.connected ? (voice.muted ? 'فعال کردن میکروفون' : 'قطع میکروفون') : 'ویس چت'}
             >
-              {voiceConnected ? (
-                voiceMuted ? (
+              {voice.connected ? (
+                voice.muted ? (
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                   </svg>

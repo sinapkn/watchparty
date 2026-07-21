@@ -54,13 +54,26 @@ export function useVoice(roomId: string, username: string) {
       const room = new Room({
         adaptiveStream: true,
         dynacast: true,
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+        ],
       })
 
       room.on(RoomEvent.Connected, () => {
-        console.log('[Voice] Connected!')
+        console.log('[Voice] Connected! Room participants:', room.remoteParticipants.size)
         setConnected(true)
         setMuted(false)
         updateParticipants(room)
+
+        // Subscribe to all existing audio tracks
+        room.remoteParticipants.forEach((p) => {
+          p.audioTracks.forEach((trackPub) => {
+            if (trackPub.track && !trackPub.isSubscribed) {
+              trackPub.setSubscribed(true)
+            }
+          })
+        })
       })
 
       room.on(RoomEvent.Disconnected, () => {

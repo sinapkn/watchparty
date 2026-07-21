@@ -132,7 +132,7 @@ export default function RoomPage() {
           </div>
 
           {/* User + Voice */}
-          <div className="flex items-center gap-1.5 sm:gap-2 text-white/40 text-xs sm:text-sm flex-shrink-0 min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-white/40 text-xs sm:text-sm flex-shrink-0 min-w-0 relative">
             {/* Voice button */}
             <button
               onClick={voice.connected ? voice.leave : voice.join}
@@ -140,10 +140,12 @@ export default function RoomPage() {
                 voice.connected
                   ? voice.muted
                     ? 'bg-red-500/15 text-red-400 border border-red-500/20'
-                    : 'bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/20'
+                    : voice.speaking.includes(username || '')
+                      ? 'bg-[var(--accent)]/20 text-[var(--accent)] border border-[var(--accent)]/30 shadow-[0_0_12px_var(--accent-glow)]'
+                      : 'bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/20'
                   : 'bg-white/5 text-white/30 hover:text-white/60 border border-white/10'
               }`}
-              title={voice.connected ? (voice.muted ? 'فعال کردن میکروفون' : 'قطع میکروفون') : 'ویس چت'}
+              title={voice.connected ? (voice.muted ? 'میکروفون قطع' : 'در حال صحبت...') : 'ویس چت'}
             >
               {voice.connected ? (
                 voice.muted ? (
@@ -151,7 +153,7 @@ export default function RoomPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className={`w-4 h-4 ${voice.speaking.includes(username || '') ? 'animate-pulse' : ''}`} fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
                     <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
                   </svg>
@@ -162,6 +164,15 @@ export default function RoomPage() {
                 </svg>
               )}
             </button>
+
+            {/* Voice status indicator */}
+            {voice.connected && !voice.muted && voice.speaking.includes(username || '') && (
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-[2px]">
+                <span className="w-[3px] h-[8px] bg-[var(--accent)] rounded-full animate-voice-bar" style={{ animationDelay: '0ms' }} />
+                <span className="w-[3px] h-[12px] bg-[var(--accent)] rounded-full animate-voice-bar" style={{ animationDelay: '150ms' }} />
+                <span className="w-[3px] h-[6px] bg-[var(--accent)] rounded-full animate-voice-bar" style={{ animationDelay: '300ms' }} />
+              </div>
+            )}
 
             <div className="w-px h-4 bg-white/10" />
 

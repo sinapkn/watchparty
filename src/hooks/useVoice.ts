@@ -27,6 +27,16 @@ export function useVoice(roomId: string, username: string) {
     }
   }, [])
 
+  const updateParticipants = useCallback((room: Room) => {
+    const names: string[] = []
+    if (room.localParticipant) names.push(room.localParticipant.identity)
+    const remoteParticipants = room.remoteParticipants
+    if (remoteParticipants) {
+      remoteParticipants.forEach((p: { identity: string }) => names.push(p.identity))
+    }
+    setParticipants(names)
+  }, [])
+
   const join = useCallback(async () => {
     if (connecting) return
     setConnecting(true)
@@ -54,40 +64,35 @@ export function useVoice(roomId: string, username: string) {
       const room = new Room({
         adaptiveStream: true,
         dynacast: true,
-        // @ts-ignore - iceServers is valid in LiveKit
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:stun1.l.google.com:19302' },
-        ],
       })
 
-      room.on(RoomEvent.Connected, () => {
-        console.log('[Voice] Connected! Room participants:', room.remoteParticipants.size)
-        setConnected(true)
-        setMuted(false)
+      // ── TrackPublished — when local audio is published ──
+      room.localParticipant.on('trackPublished', (trackPub: any) => {
+        console.log('[Voice] Local track published:', trackPub.kind)
+      })
+
+      // ── Participant disconnected ──
+      room.on(RoomEvent.ParticipantDisconnected, (p) => {
+        console.log('[Voice] Participant left:', p.identity)
         updateParticipants(room)
-
-        // Subscribe to all existing audio tracks
-        room.remoteParticipants.forEach((p: any) => {
-          if (p.audioTracks) {
-            p.audioTracks.forEach((trackPub: any) => {
-              if (trackPub.track && !trackPub.isSubscribed) {
-                trackPub.setSubscribed(true)
-              }
-            })
-          }
-        })
       })
 
-      room.on(RoomEvent.Disconnected, () => {
-        console.log('[Voice] Disconnected')
-        setConnected(false)
-        setParticipants([])
+      // ── Participant connected ──
+      room.on(RoomEvent.ParticipantConnected, (p) => {
+        console.log('[Voice] Participant joined:', p.identity)
+        updateParticipants(room)
       })
 
-      room.on(RoomEvent.ParticipantConnected, () => updateParticipants(room))
-      room.on(RoomEvent.ParticipantDisconnected, () => updateParticipants(room))
+      // ── Track subscribed — when we receive remote audio ──
+      room.on(RoomEvent.TrackSubscribed, (_track: RemoteTrack, publication: any, p: any) => {
+        console.log('[Voice] Track subscribed from:', p.identity, publication.kind)
+        if (publication.kind === 'audio') {
+          const audioElement = _track.attach()
+          audioElement.play().catch(console.error)
+        }
+      })
 
+      // ── Active speakers ──
       room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
         const speakerNames = speakers
           .map((s: { identity?: string }) => s.identity ?? '')
@@ -95,24 +100,50 @@ export function useVoice(roomId: string, username: string) {
         setSpeaking(speakerNames)
       })
 
+      // ── Audio level (for faster speaking detection) ──
+      // @ts-ignore
+      room.on('localAudioLevel', (level: number) => {
+        if (level > 0.01 && username) {
+          setSpeaking(prev => prev.includes(username) ? prev : [...prev, username])
+        }
+      })
+
+      // ── Connected ──
+      room.on(RoomEvent.Connected, () => {
+        console.log('[Voice] Connected! Enabling mic...')
+        setConnected(true)
+        updateParticipants(room)
+      })
+
+      // ── Media error ──
       room.on(RoomEvent.MediaDevicesError, (err: Error) => {
         console.error('[Voice] Media device error:', err)
-        setError('دسترسی به میکروفون مجاز نیست. لطفاً از مرورگر اجازه بدید.')
+        setError('دسترسی به میکروفون مجاز نیست')
+      })
+
+      // ── Disconnected ──
+      room.on(RoomEvent.Disconnected, () => {
+        console.log('[Voice] Disconnected')
+        setConnected(false)
+        setMuted(true)
+        setParticipants([])
       })
 
       await room.connect(url, token)
       roomRef.current = room
 
-      // Request microphone permission
-      try {
-        await room.localParticipant.setMicrophoneEnabled(true)
-        console.log('[Voice] Microphone enabled')
-      } catch (micErr) {
-        console.error('[Voice] Microphone error:', micErr)
-        setError('خطا در دسترسی به میکروفون. لطفاً مجوز میکروفون رو در مرورگر بررسی کنید.')
-      }
+      // Wait a bit for ICE to settle, then enable mic
+      setTimeout(async () => {
+        try {
+          await room.localParticipant.setMicrophoneEnabled(true)
+          console.log('[Voice] Microphone enabled successfully')
+          setMuted(false)
+        } catch (micErr) {
+          console.error('[Voice] Microphone error:', micErr)
+          setError('خطا در دسترسی به میکروفون')
+        }
+      }, 1000)
 
-      updateParticipants(room)
     } catch (err: any) {
       console.error('[Voice] Join error:', err)
       setError(err.message || 'خطا در اتصال ویس')
@@ -120,7 +151,7 @@ export function useVoice(roomId: string, username: string) {
     } finally {
       setConnecting(false)
     }
-  }, [roomId, username, connecting])
+  }, [roomId, username, connecting, updateParticipants])
 
   const leave = useCallback(() => {
     if (roomRef.current) {
@@ -134,23 +165,17 @@ export function useVoice(roomId: string, username: string) {
     setError('')
   }, [])
 
-  const toggleMute = useCallback(() => {
+  const toggleMute = useCallback(async () => {
     if (!roomRef.current) return
     const room = roomRef.current
-    const newMuted = !room.localParticipant.isMicrophoneEnabled
-    room.localParticipant.setMicrophoneEnabled(!newMuted)
-    setMuted(newMuted)
-  }, [])
-
-  const updateParticipants = (room: Room) => {
-    const names: string[] = []
-    if (room.localParticipant) names.push(room.localParticipant.identity)
-    const remoteParticipants = room.remoteParticipants
-    if (remoteParticipants) {
-      remoteParticipants.forEach((p: { identity: string }) => names.push(p.identity))
+    const newMuted = room.localParticipant.isMicrophoneEnabled
+    try {
+      await room.localParticipant.setMicrophoneEnabled(newMuted)
+      setMuted(!newMuted)
+    } catch (err) {
+      console.error('[Voice] Toggle mute error:', err)
     }
-    setParticipants(names)
-  }
+  }, [])
 
   return {
     join,

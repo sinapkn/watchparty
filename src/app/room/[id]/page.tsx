@@ -128,7 +128,7 @@ export default function RoomPage() {
 
           {/* Room info */}
           <div className="relative min-w-0 flex-1 flex justify-center">
-            <RoomHeader roomName={room.name} roomId={room.id} userCount={userCount} users={onlineUsers} />
+            <RoomHeader roomName={room.name} roomId={room.id} userCount={userCount} users={onlineUsers} speakingUsers={voice.speaking} />
           </div>
 
           {/* User + Voice */}

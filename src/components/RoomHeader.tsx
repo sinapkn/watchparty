@@ -7,9 +7,10 @@ interface RoomHeaderProps {
   roomId: string
   userCount: number
   users: string[]
+  speakingUsers?: string[]
 }
 
-export default function RoomHeader({ roomName, roomId, userCount, users }: RoomHeaderProps) {
+export default function RoomHeader({ roomName, roomId, userCount, users, speakingUsers = [] }: RoomHeaderProps) {
   const [copied, setCopied] = useState(false)
   const [showUsers, setShowUsers] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -74,8 +75,20 @@ export default function RoomHeader({ roomName, roomId, userCount, users }: RoomH
                   {users.length === 0 ? (
                     <span className="text-[11px] text-white/30 px-1" style={{ fontFamily: 'var(--font-body)' }}>کسی آنلاین نیست</span>
                   ) : users.map((u, i) => (
-                    <span key={i} className="px-2.5 py-1.5 bg-white/5 text-white/70 rounded-lg text-[11px] flex items-center gap-1.5" style={{ fontFamily: 'var(--font-body)' }}>
-                      <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full flex-shrink-0" />
+                    <span key={i} className={`px-2.5 py-1.5 text-[11px] flex items-center gap-1.5 rounded-lg transition-colors ${
+                      speakingUsers.includes(u)
+                        ? 'bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/20'
+                        : 'bg-white/5 text-white/70'
+                    }`} style={{ fontFamily: 'var(--font-body)' }}>
+                      {speakingUsers.includes(u) ? (
+                        <div className="flex gap-[1.5px] items-end h-3">
+                          <span className="w-[2.5px] bg-current rounded-full animate-voice-bar" style={{ height: '6px', animationDelay: '0ms' }} />
+                          <span className="w-[2.5px] bg-current rounded-full animate-voice-bar" style={{ height: '10px', animationDelay: '150ms' }} />
+                          <span className="w-[2.5px] bg-current rounded-full animate-voice-bar" style={{ height: '7px', animationDelay: '300ms' }} />
+                        </div>
+                      ) : (
+                        <span className="w-1.5 h-1.5 bg-current rounded-full flex-shrink-0" />
+                      )}
                       {u}
                     </span>
                   ))}

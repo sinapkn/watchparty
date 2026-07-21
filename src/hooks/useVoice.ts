@@ -166,10 +166,10 @@ export function useVoice(roomId: string, username: string) {
   const toggleMute = useCallback(async () => {
     if (!roomRef.current) return
     const room = roomRef.current
-    const newMuted = room.localParticipant.isMicrophoneEnabled
+    const currentlyEnabled = room.localParticipant.isMicrophoneEnabled
     try {
-      await room.localParticipant.setMicrophoneEnabled(newMuted)
-      setMuted(!newMuted)
+      await room.localParticipant.setMicrophoneEnabled(!currentlyEnabled)
+      setMuted(!currentlyEnabled)
     } catch (err) {
       console.error('[Voice] Toggle mute error:', err)
     }

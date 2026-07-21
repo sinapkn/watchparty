@@ -5,7 +5,7 @@
 <br>
 
 <p align="center">
-  <a href="https://watchparty.dpdns.org"><strong>🚀 watchparty.dpdns.org</strong></a>
+  <a href="https://watchparty.dpdns.org"><strong> watchparty.dpdns.org</strong></a>
 </p>
 
 <br>

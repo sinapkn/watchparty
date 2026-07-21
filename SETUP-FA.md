@@ -81,39 +81,43 @@ DATABASE_URL=${{Postgres.DATABASE_URL}}
 
 Railway این مقدار را از سرویس PostgreSQL همان پروژه می‌خواند.
 
-### 5. راه‌اندازی ویس چت (LiveKit)
+### 5. راه‌اندازی ویس چت (LiveKit Cloud)
 
-برای فعال کردن **ویس چت** در پروژه، نیاز به یک حساب **دوم** در Railway داری. چون هر حساب Railway محدودیت **۵ سرویس** دارد و پروژه Watch Party با PostgreSQL دو سرویس رو اشغال کرده. پس:
+برای فعال کردن **ویس چت** در پروژه، از **LiveKit Cloud** استفاده کنید. این سرویس رایگان است و نیازی به کردیت کارت ندارد.
 
-#### قدم اول: یک حساب دوم در Railway بساز
-
-```bash
-۱. یک ایمیل دیگر (یا اکانت گوگل دیگر) بردار.
-۲. برو به https://railway.app و ثبت‌نام کن.
-۳. در این حساب جدید یک پروژه بساز.
-۴. گزینه New → Template را انتخاب کن.
-۵. عبارت LiveKit را جستجو و انتخاب کن. (این کار باعث ایجاد سرویس LiveKit و Redis می‌شود.)
-```
-
-#### قدم دوم: دریافت اطلاعات LiveKit
+#### قدم اول: ثبت‌نام در LiveKit Cloud
 
 ```bash
-۱. به پروژه LiveKit در حساب دوم برو.
-۲. متغیرهای LIVEKIT_API_KEY و LIVEKIT_API_SECRET را از بخش Variables کپی کن.
-۳. از بخش Settings → Networking سرویس LiveKit یک Public Domain دریافت کن
-   (مثل: wss://livekit-xyz.up.railway.app).
+۱. برو به https://cloud.livekit.io
+۲. ثبت‌نام کن با Google یا GitHub (رایگان، بدون کردیت کارت)
+۳. بعد از ورود، روی Create Project بزن
+۴. اسم پروژه: watchparty
+۵. منطقه: نزدیک‌ترین (مثلاً Frankfurt)
+۶. Create رو بزن
 ```
 
-#### قدم سوم: تنظیم متغیرها در حساب اصلی (Watch Party)
+#### قدم دوم: گرفتن API Keys
 
-به حساب اول (پروژه اصلی Watch Party) برگرد و در بخش Variables موارد زیر را اضافه کن:
+```bash
+۱. از منوی چپ برو به Settings → API Keys
+۲. سه مقدار رو کپی کن:
+
+   LIVEKIT_API_KEY     (مثل: sk_abc123...)
+   LIVEKIT_API_SECRET   (مثل: xyz456...)
+   LIVEKIT_URL          (مثل: wss://xxx.livekit.cloud)
+```
+
+#### قدم سوم: تنظیم متغیرها در Railway
+
+به پروژه اصلی Watch Party در Railway برو و در بخش Variables موارد زیر را اضافه کن:
 
 ```env
-# LiveKit (ویس چت)
-LIVEKIT_API_KEY=          # مقداری که از حساب دوم کپی کردی
-LIVEKIT_API_SECRET=       # مقداری که از حساب دوم کپی کردی
-LIVEKIT_URL=wss://livekit-xyz.up.railway.app  # آدرس عمومی LiveKit
+LIVEKIT_API_KEY=sk_abc123...      # از LiveKit Cloud
+LIVEKIT_API_SECRET=xyz456...       # از LiveKit Cloud
+LIVEKIT_URL=wss://xxx.livekit.cloud  # از LiveKit Cloud
 ```
+
+> **نکته:** فقط همین ۳ متغیر کافی است. نیازی به اکانت دوم Railway نیست.
 
 ### 7. فایل Railway کانفیگ
 

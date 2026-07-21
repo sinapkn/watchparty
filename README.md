@@ -1,6 +1,14 @@
 # Watch Party 🎬
 
-**Watch Party** is a free, real-time synchronized video-watching platform. Create a room, add a video link, share the link with friends, and watch together — everyone's playback stays perfectly in sync.
+**Watch Party** is a free, real-time synchronized video-watching platform with voice chat. Create a room, add a video link, share the link with friends, and watch together — everyone's playback stays perfectly in sync.
+
+<br>
+
+<p align="center">
+  <a href="https://watchparty.dpdns.org"><strong>🚀 watchparty.dpdns.org</strong></a>
+</p>
+
+<br>
 
 <p align="center">
   <a href="./SETUP.md">📦 Self-Hosting Guide</a>
@@ -56,6 +64,7 @@ Works on desktop and mobile. Fullscreen mode with orientation lock on mobile dev
 | **Framework** | Next.js 16 (App Router) |
 | **Language** | TypeScript |
 | **Real-time** | Socket.io |
+| **Voice Chat** | LiveKit (WebRTC) |
 | **Database** | PostgreSQL + Prisma ORM |
 | **Styling** | Tailwind CSS v4 |
 | **Video Proxy** | Custom Next.js API route |

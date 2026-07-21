@@ -144,57 +144,50 @@ export default function RoomPage() {
 
           {/* User + Voice */}
           <div className="flex items-center gap-1.5 sm:gap-2 text-white/40 text-xs sm:text-sm flex-shrink-0 min-w-0 relative">
-            {/* Voice status icon — display only */}
-            <div className={`relative w-9 h-9 flex items-center justify-center rounded-lg flex-shrink-0 ${
-              voice.connected
-                ? voice.muted
-                  ? 'text-red-400'
-                  : voice.speaking.includes(username || '')
-                    ? 'text-[var(--accent)]'
-                    : 'text-[var(--accent)]'
-                : 'text-white/30'
-            }`}>
-              {voice.connected ? (
-                voice.muted ? (
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
-                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
-                  </svg>
-                )
-              ) : (
+            {/* Voice toggle — single button, like Zoom/Meet */}
+            <button
+              onClick={voice.toggleMute}
+              disabled={!voice.connected}
+              className={`relative flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 flex-shrink-0 active:scale-95 ${
+                !voice.connected
+                  ? 'bg-white/5 text-white/20 cursor-wait'
+                  : voice.muted
+                    ? 'bg-red-500/15 text-red-400 border border-red-500/20 hover:bg-red-500/25'
+                    : voice.speaking.includes(username || '')
+                      ? 'bg-[var(--accent)]/20 text-[var(--accent)] border border-[var(--accent)]/30 shadow-[0_0_12px_var(--accent-glow)]'
+                      : 'bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/20 hover:bg-[var(--accent)]/25'
+              }`}
+              style={{ fontFamily: 'var(--font-body)' }}
+            >
+              {/* Icon */}
+              {!voice.connected ? (
                 <svg className="w-4 h-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                 </svg>
+              ) : voice.muted ? (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+                  <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                </svg>
               )}
 
-              {/* Voice bars */}
+              {/* Label */}
+              <span className="text-[10px] sm:text-xs">
+                {!voice.connected ? 'ویس...' : voice.muted ? 'خاموش' : 'وصل'}
+              </span>
+
+              {/* Speaking indicator (green dot) */}
               {voice.connected && !voice.muted && voice.speaking.includes(username || '') && (
-                <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 flex items-end gap-[2px] h-3">
-                  <span className="w-[3px] bg-current rounded-full animate-voice-bar" style={{ animationDelay: '0ms', height: '6px' }} />
-                  <span className="w-[3px] bg-current rounded-full animate-voice-bar" style={{ animationDelay: '150ms', height: '10px' }} />
-                  <span className="w-[3px] bg-current rounded-full animate-voice-bar" style={{ animationDelay: '300ms', height: '8px' }} />
-                </div>
+                <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--accent)]" />
+                </span>
               )}
-            </div>
-
-            {/* Mute/Unmute button */}
-            {voice.connected && (
-              <button
-                onClick={voice.toggleMute}
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-medium transition-all duration-200 flex-shrink-0 active:scale-95 hover:scale-105 ${
-                  voice.muted
-                    ? 'bg-red-500/15 text-red-400 border border-red-500/20 hover:bg-red-500/25'
-                    : 'bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/20 hover:bg-[var(--accent)]/25'
-                }`}
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
-                {voice.muted ? 'آنمیوت' : 'میوت'}
-              </button>
-            )}
+            </button>
 
             <div className="w-px h-4 bg-white/10" />
 

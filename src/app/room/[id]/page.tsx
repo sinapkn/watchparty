@@ -75,6 +75,17 @@ export default function RoomPage() {
     return () => { socket.emit('leave-room', { roomId }); socket.disconnect() }
   }, [username, room, roomId])
 
+  // Auto-join voice when user enters the room
+  useEffect(() => {
+    if (username && !voice.connected && !voice.connecting) {
+      voice.join()
+    }
+    return () => {
+      if (voice.connected) voice.leave()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username])
+
   const handleSend = useCallback((content: string) => {
     if (!socketRef.current || !username) return
     socketRef.current.emit('chat-message', { roomId, message: { id: Date.now().toString(), roomId, username, content, createdAt: new Date().toISOString() } })
@@ -135,31 +146,31 @@ export default function RoomPage() {
           <div className="flex items-center gap-1.5 sm:gap-2 text-white/40 text-xs sm:text-sm flex-shrink-0 min-w-0 relative">
             {/* Voice button */}
             <button
-              onClick={voice.connected ? voice.leave : voice.join}
-              className={`relative w-9 h-9 flex items-center justify-center rounded-lg transition-all flex-shrink-0 active:scale-90 ${
+              onClick={voice.toggleMute}
+              className={`relative w-9 h-9 flex items-center justify-center rounded-lg transition-all duration-200 flex-shrink-0 active:scale-90 hover:scale-105 ${
                 voice.connected
                   ? voice.muted
-                    ? 'bg-red-500/15 text-red-400 border border-red-500/20'
+                    ? 'bg-red-500/15 text-red-400 border border-red-500/20 hover:bg-red-500/25 hover:border-red-500/30'
                     : voice.speaking.includes(username || '')
-                      ? 'bg-[var(--accent)]/20 text-[var(--accent)] border border-[var(--accent)]/30 shadow-[0_0_12px_var(--accent-glow)]'
-                      : 'bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/20'
-                  : 'bg-white/5 text-white/30 hover:text-white/60 border border-white/10'
+                      ? 'bg-[var(--accent)]/20 text-[var(--accent)] border border-[var(--accent)]/30 shadow-[0_0_12px_var(--accent-glow)] hover:shadow-[0_0_20px_var(--accent-glow-strong)]'
+                      : 'bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/20 hover:bg-[var(--accent)]/25'
+                  : 'bg-white/5 text-white/30 hover:bg-white/10 hover:text-white/50'
               }`}
-              title={voice.connected ? (voice.muted ? 'میکروفون قطع' : 'در حال صحبت...') : 'ویس چت'}
+              title={voice.connected ? (voice.muted ? 'کلیک = فعال کردن میکروفون' : 'کلیک = قطع میکروفون') : 'در حال اتصال...'}
             >
               {voice.connected ? (
                 voice.muted ? (
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <svg className="w-4 h-4 transition-transform duration-200 active:scale-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 transition-transform duration-200 active:scale-90" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
                     <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
                   </svg>
                 )
               ) : (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <svg className="w-4 h-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                 </svg>
               )}

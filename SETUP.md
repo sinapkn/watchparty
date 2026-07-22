@@ -112,9 +112,9 @@ To enable **Voice Chat** in the project, use **LiveKit Cloud**. It's free and do
 Go to your Watch Party project in Railway → Variables section and add:
 
 ```env
-LIVEKIT_API_KEY=sk_abc123...      # From LiveKit Cloud
-LIVEKIT_API_SECRET=xyz456...       # From LiveKit Cloud
-LIVEKIT_URL=wss://xxx.livekit.cloud  # From LiveKit Cloud
+LIVEKIT_API_KEY=   
+LIVEKIT_API_SECRET=
+LIVEKIT_URL=
 ```
 
 > **Note:** Only these 3 variables are needed. No second Railway account is required.

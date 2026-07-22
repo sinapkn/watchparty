@@ -17,7 +17,7 @@ export default function Home() {
             </svg>
           </div>
           <span className="text-base sm:text-lg font-bold text-[var(--text-primary)]" style={{ fontFamily: 'var(--font-heading)' }}>
-            Watch Party
+            باهم
           </span>
         </div>
       </header>
@@ -118,7 +118,7 @@ export default function Home() {
               <span className="font-semibold text-[var(--text-secondary)]">MMDJ</span>
             </div>
             <p className="text-[var(--text-muted)] text-[10px] sm:text-xs mt-2 opacity-60" style={{ fontFamily: 'var(--font-body)' }}>
-              تحت مجوز MIT — {new Date().getFullYear()} © sinapk
+              تحت مجوز MIT — {new Date().getFullYear()} © baham
             </p>
           </div>
         </footer>
